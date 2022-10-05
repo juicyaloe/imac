@@ -1,6 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import {css} from '@emotion/react';
-
 import {Fragment, useRef} from 'react';
 
 function TradeHome(props) {
