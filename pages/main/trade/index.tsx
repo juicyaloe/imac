@@ -1,4 +1,5 @@
 import {Fragment, useRef} from 'react';
+import classes from './index.module.css';
 
 function TradeHome(props) {
     const userInputRef = useRef<HTMLSelectElement>(null);
@@ -17,9 +18,13 @@ function TradeHome(props) {
 
     return (
         <Fragment>
-            <form id='trade' onSubmit={sellSubmitHandler}>
-                <div>
-                    <div>
+            <form
+                className={classes.form}
+                id='trade'
+                onSubmit={sellSubmitHandler}
+            >
+                <div className={classes.controls}>
+                    <div className={classes.control}>
                         <label htmlFor='trade-user'>거래 대상 회원 선택</label>
                         <select
                             name='trade-user'
@@ -31,7 +36,7 @@ function TradeHome(props) {
                             <option value='c'>c 유저</option>
                         </select>
                     </div>
-                    <div>
+                    <div className={classes.control}>
                         <label htmlFor='trade-buyplayer'>
                             구매할 선수 선택
                         </label>
@@ -45,7 +50,7 @@ function TradeHome(props) {
                             <option value='3a'>3a 선수</option>
                         </select>
                     </div>
-                    <div>
+                    <div className={classes.control}>
                         <label htmlFor='trade-sellplayer'>
                             판매할 선수 선택
                         </label>
