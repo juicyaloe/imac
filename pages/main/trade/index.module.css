@@ -48,3 +48,9 @@
     color: #dafff7;
     border-radius: 4px;
 }
+
+.form button:hover,
+.form button:active {
+    background: white;
+    color: #03be9f;
+}
