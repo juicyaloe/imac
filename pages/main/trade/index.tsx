@@ -1,10 +1,34 @@
-import {Fragment, useRef} from 'react';
+import {Fragment, useEffect, useRef, useState} from 'react';
 import classes from './index.module.css';
+
+type userData = {
+    id: string;
+};
+
+type playerData = {
+    id: string;
+    player: string[];
+};
 
 function TradeHome(props) {
     const userInputRef = useRef<HTMLSelectElement>(null);
     const buyPlayerInputRef = useRef<HTMLSelectElement>(null);
     const sellPlayerInputRef = useRef<HTMLSelectElement>(null);
+
+    const [userData, setUserData] = useState<userData[]>();
+    const [playerData, setPlayerData] = useState<playerData[]>();
+
+    useEffect(() => {
+        fetch('/api/users')
+            .then((response) => response.json())
+            .then((data) => setUserData(data));
+    });
+
+    useEffect(() => {
+        fetch('/api/player')
+            .then((response) => response.json())
+            .then((data) => setPlayerData(data));
+    }, [userInputRef.current?.value]);
 
     function sellSubmitHandler(event) {
         event.preventDefault();
@@ -31,9 +55,11 @@ function TradeHome(props) {
                             id='trade-user'
                             ref={userInputRef}
                         >
-                            <option value='a'>a 유저</option>
-                            <option value='b'>b 유저</option>
-                            <option value='c'>c 유저</option>
+                            {userData?.map((data: userData) => (
+                                <option key={data.id} value={data.id}>
+                                    {data.id}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className={classes.control}>
@@ -45,9 +71,16 @@ function TradeHome(props) {
                             id='trade-buyplayer'
                             ref={buyPlayerInputRef}
                         >
-                            <option value='1a'>1a 선수</option>
-                            <option value='2a'>2a 선수</option>
-                            <option value='3a'>3a 선수</option>
+                            {playerData
+                                ?.find(
+                                    (data: playerData) =>
+                                        data.id === userInputRef.current?.value,
+                                )
+                                ?.player.map((data) => (
+                                    <option key={data} value={data}>
+                                        {data}
+                                    </option>
+                                ))}
                         </select>
                     </div>
                     <div className={classes.control}>
