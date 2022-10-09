@@ -27,6 +27,11 @@
     justify-content: space-between;
 }
 
+.lastcontrol {
+    padding-top: 1rem;
+    border-top: 1px solid gray;
+}
+
 .control label {
     font-weight: bold;
 }

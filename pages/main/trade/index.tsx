@@ -89,7 +89,9 @@ function TradeHome(props) {
                             {playerDataFiltering(playerData)}
                         </select>
                     </div>
-                    <div className={classes.control}>
+                    <div
+                        className={`${classes.control} ${classes.lastcontrol}`}
+                    >
                         <label htmlFor='trade-sellplayer'>
                             판매할 선수 선택
                         </label>
