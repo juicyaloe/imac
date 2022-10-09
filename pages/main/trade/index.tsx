@@ -1,34 +1,27 @@
-import {Fragment, useEffect, useRef, useState} from 'react';
+import {Fragment, useEffect, useRef, useState, useCallback} from 'react';
 import classes from './index.module.css';
-
-type userData = {
-    id: string;
-};
-
-type playerData = {
-    id: string;
-    player: string[];
-};
 
 function TradeHome(props) {
     const userInputRef = useRef<HTMLSelectElement>(null);
     const buyPlayerInputRef = useRef<HTMLSelectElement>(null);
     const sellPlayerInputRef = useRef<HTMLSelectElement>(null);
 
-    const [userData, setUserData] = useState<userData[]>();
-    const [playerData, setPlayerData] = useState<playerData[]>();
+    const [userData, setUserData] = useState<string[]>();
+    const [playerData, setPlayerData] = useState<string[]>();
 
     useEffect(() => {
+        console.log('user 목록 Render');
         fetch('/api/users')
             .then((response) => response.json())
-            .then((data) => setUserData(data));
-    });
+            .then((json) => setUserData(json.data));
+    }, []);
 
     useEffect(() => {
-        fetch('/api/player')
+        console.log('player 목록 Render');
+        fetch('/api/players/')
             .then((response) => response.json())
-            .then((data) => setPlayerData(data));
-    }, [userInputRef.current?.value]);
+            .then((json) => setPlayerData(json));
+    }, []);
 
     function sellSubmitHandler(event) {
         event.preventDefault();
@@ -55,11 +48,13 @@ function TradeHome(props) {
                             id='trade-user'
                             ref={userInputRef}
                         >
-                            {userData?.map((data: userData) => (
-                                <option key={data.id} value={data.id}>
-                                    {data.id}
+                            {userData?.map((id) => (
+                                <option key={id} value={id}>
+                                    {id}
                                 </option>
-                            ))}
+                            )) ?? (
+                                <option>회원 정보를 불러오는 중입니다</option>
+                            )}
                         </select>
                     </div>
                     <div className={classes.control}>
@@ -71,16 +66,13 @@ function TradeHome(props) {
                             id='trade-buyplayer'
                             ref={buyPlayerInputRef}
                         >
-                            {playerData
-                                ?.find(
-                                    (data: playerData) =>
-                                        data.id === userInputRef.current?.value,
-                                )
-                                ?.player.map((data) => (
-                                    <option key={data} value={data}>
-                                        {data}
-                                    </option>
-                                ))}
+                            {playerData?.map((player) => (
+                                <option key={player} value={player}>
+                                    {player}
+                                </option>
+                            )) ?? (
+                                <option>선수 정보를 불러오는 중입니다</option>
+                            )}
                         </select>
                     </div>
                     <div className={classes.control}>
