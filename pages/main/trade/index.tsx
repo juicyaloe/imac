@@ -16,12 +16,20 @@ function TradeHome(props) {
             .then((json) => setUserData(json.data));
     }, []);
 
+    // 코드 중복 느낌이 있음 나중에 없애야함
+    // 개별 api보다 전체 api를 불러서 call 하는게 나아보임
     useEffect(() => {
         console.log('player 목록 Render');
-        fetch('/api/players/')
+        fetch('/api/players/' + userInputRef.current?.value)
             .then((response) => response.json())
-            .then((json) => setPlayerData(json));
-    }, []);
+            .then((json) => setPlayerData(json.data));
+    }, [userData]);
+
+    async function userChange(e) {
+        await fetch('/api/players/' + e.target.value)
+            .then((response) => response.json())
+            .then((json) => setPlayerData(json.data));
+    }
 
     function sellSubmitHandler(event) {
         event.preventDefault();
@@ -46,6 +54,7 @@ function TradeHome(props) {
                         <select
                             name='trade-user'
                             id='trade-user'
+                            onChange={userChange}
                             ref={userInputRef}
                         >
                             {userData?.map((id) => (
