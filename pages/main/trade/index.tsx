@@ -1,34 +1,45 @@
 import {Fragment, useEffect, useRef, useState, useCallback} from 'react';
 import classes from './index.module.css';
 
+type playerType = {
+    id: string;
+    player: string[];
+};
+
 function TradeHome(props) {
     const userInputRef = useRef<HTMLSelectElement>(null);
+    const [currentUser, setCurrentUser] = useState<string>();
+
     const buyPlayerInputRef = useRef<HTMLSelectElement>(null);
     const sellPlayerInputRef = useRef<HTMLSelectElement>(null);
 
     const [userData, setUserData] = useState<string[]>();
-    const [playerData, setPlayerData] = useState<string[]>();
+    const [playerData, setPlayerData] = useState<playerType[]>();
 
+    // 고쳤긴 한데 여전히 하드코딩 느낌이 있음
+    // Ref, State 훅을 하나로 통일하는 것이 좋을듯 함
     useEffect(() => {
-        console.log('user 목록 Render');
+        console.log('db 정보 불러오기');
         fetch('/api/users')
             .then((response) => response.json())
-            .then((json) => setUserData(json.data));
+            .then((json) => {
+                setUserData(json.data);
+                setCurrentUser(json.data[0]);
+            });
+
+        fetch('/api/players/')
+            .then((response) => response.json())
+            .then((json) => setPlayerData(json.data));
     }, []);
 
-    // 코드 중복 느낌이 있음 나중에 없애야함
-    // 개별 api보다 전체 api를 불러서 call 하는게 나아보임
-    useEffect(() => {
-        console.log('player 목록 Render');
-        fetch('/api/players/' + userInputRef.current?.value)
-            .then((response) => response.json())
-            .then((json) => setPlayerData(json.data));
-    }, [userData]);
-
-    async function userChange(e) {
-        await fetch('/api/players/' + e.target.value)
-            .then((response) => response.json())
-            .then((json) => setPlayerData(json.data));
+    function playerDataFiltering(playerData: playerType[] | undefined) {
+        return playerData
+            ?.find((profile) => profile.id === currentUser)
+            ?.player.map((player) => (
+                <option key={player} value={player}>
+                    {player}
+                </option>
+            ));
     }
 
     function sellSubmitHandler(event) {
@@ -54,7 +65,7 @@ function TradeHome(props) {
                         <select
                             name='trade-user'
                             id='trade-user'
-                            onChange={userChange}
+                            onChange={(e) => setCurrentUser(e.target.value)}
                             ref={userInputRef}
                         >
                             {userData?.map((id) => (
@@ -75,13 +86,7 @@ function TradeHome(props) {
                             id='trade-buyplayer'
                             ref={buyPlayerInputRef}
                         >
-                            {playerData?.map((player) => (
-                                <option key={player} value={player}>
-                                    {player}
-                                </option>
-                            )) ?? (
-                                <option>선수 정보를 불러오는 중입니다</option>
-                            )}
+                            {playerDataFiltering(playerData)}
                         </select>
                     </div>
                     <div className={classes.control}>
