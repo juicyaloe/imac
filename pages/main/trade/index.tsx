@@ -1,45 +1,39 @@
 import {Fragment, useEffect, useRef, useState, useCallback} from 'react';
 import classes from './index.module.css';
 
-type playerType = {
-    id: string;
-    player: string[];
-};
-
 function TradeHome(props) {
     const userInputRef = useRef<HTMLSelectElement>(null);
-    const [currentUser, setCurrentUser] = useState<string>();
-
     const buyPlayerInputRef = useRef<HTMLSelectElement>(null);
     const sellPlayerInputRef = useRef<HTMLSelectElement>(null);
 
     const [userData, setUserData] = useState<string[]>();
-    const [playerData, setPlayerData] = useState<playerType[]>();
+    const [playerData, setPlayerData] = useState<string[]>();
 
-    // 고쳤긴 한데 여전히 하드코딩 느낌이 있음
-    // Ref, State 훅을 하나로 통일하는 것이 좋을듯 함
     useEffect(() => {
-        console.log('db 정보 불러오기');
-        fetch('/api/users')
+        async function loadData() {
+            const userList = await fetchUserList();
+            await fetchPlayerList(userList[0]);
+        }
+
+        loadData();
+    }, []);
+
+    async function fetchUserList() {
+        return await fetch('/api/users')
             .then((response) => response.json())
             .then((json) => {
                 setUserData(json.data);
-                setCurrentUser(json.data[0]);
+                return json.data;
             });
+    }
 
-        fetch('/api/players/')
+    async function fetchPlayerList(userId: string) {
+        return await fetch('/api/players/' + userId)
             .then((response) => response.json())
-            .then((json) => setPlayerData(json.data));
-    }, []);
-
-    function playerDataFiltering(playerData: playerType[] | undefined) {
-        return playerData
-            ?.find((profile) => profile.id === currentUser)
-            ?.player.map((player) => (
-                <option key={player} value={player}>
-                    {player}
-                </option>
-            ));
+            .then((json) => {
+                setPlayerData(json.data);
+                return json.data;
+            });
     }
 
     function sellSubmitHandler(event) {
@@ -49,6 +43,7 @@ function TradeHome(props) {
         const selectedBuyPlayer = buyPlayerInputRef.current?.value;
         const selectedSellPlayer = sellPlayerInputRef.current?.value;
 
+        // 전송
         console.log(selectedUser, selectedBuyPlayer, selectedSellPlayer);
     }
 
@@ -65,7 +60,7 @@ function TradeHome(props) {
                         <select
                             name='trade-user'
                             id='trade-user'
-                            onChange={(e) => setCurrentUser(e.target.value)}
+                            onChange={(e) => fetchPlayerList(e.target.value)}
                             ref={userInputRef}
                         >
                             {userData?.map((id) => (
@@ -86,7 +81,13 @@ function TradeHome(props) {
                             id='trade-buyplayer'
                             ref={buyPlayerInputRef}
                         >
-                            {playerDataFiltering(playerData)}
+                            {playerData?.map((id) => (
+                                <option key={id} value={id}>
+                                    {id}
+                                </option>
+                            )) ?? (
+                                <option>선수 정보를 불러오는 중입니다</option>
+                            )}
                         </select>
                     </div>
                     <div
