@@ -1,15 +1,35 @@
-import {Fragment, useRef} from 'react';
+import {Fragment, useRef, useEffect, useState} from 'react';
 import classes from './index.module.css';
+
+type tradeType = {
+    targetId: string;
+    targetPlayer: string;
+    myPlayer: string;
+};
 
 export default function TradeAdmin() {
     const tradeListRef = useRef<HTMLSelectElement>(null);
+    const [tradeList, setTradeList] = useState<tradeType[]>();
+
+    useEffect(() => {
+        async function loadData() {
+            await fetchTradeList();
+        }
+
+        loadData();
+    }, []);
+
+    async function fetchTradeList() {
+        await fetch('/api/trades')
+            .then((response) => response.json())
+            .then((json) => setTradeList(json.data));
+    }
 
     function checkSubmitHandler(data: string) {
+        const selectedTrade = tradeListRef.current?.value;
         if (data === 'accept') {
-            const selectedTrade = tradeListRef.current?.value;
             console.log(selectedTrade, '수락');
         } else {
-            const selectedTrade = tradeListRef.current?.value;
             console.log(selectedTrade, '거절');
         }
     }
@@ -28,9 +48,12 @@ export default function TradeAdmin() {
                     ref={tradeListRef}
                     size={10}
                 >
-                    <option value='a'>a</option>
-                    <option value='b'>b</option>
-                    <option value='c'>c</option>
+                    {tradeList?.map((data: tradeType, index) => (
+                        <option key={index} value={data.myPlayer}>
+                            {data.targetId}유저의 {data.targetPlayer}선수를{' '}
+                            {data.myPlayer}선수와 교환
+                        </option>
+                    ))}
                 </select>
             </div>
             <div className={classes.submit}>

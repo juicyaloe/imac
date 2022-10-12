@@ -36,15 +36,35 @@ function TradeHome(props) {
             });
     }
 
+    async function postTrade(
+        targetId: string,
+        targetPlayer: string,
+        myPlayer: string,
+    ) {
+        const tradeJson = {
+            targetId: targetId,
+            targetPlayer: targetPlayer,
+            myPlayer: myPlayer,
+        };
+
+        await fetch('/api/trades', {
+            method: 'POST',
+            body: JSON.stringify(tradeJson),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+    }
+
     function sellSubmitHandler(event) {
         event.preventDefault();
 
-        const selectedUser = userInputRef.current?.value;
-        const selectedBuyPlayer = buyPlayerInputRef.current?.value;
-        const selectedSellPlayer = sellPlayerInputRef.current?.value;
+        const selectedUser = userInputRef.current!.value;
+        const selectedBuyPlayer = buyPlayerInputRef.current!.value;
+        const selectedSellPlayer = sellPlayerInputRef.current!.value;
 
         // 전송
-        console.log(selectedUser, selectedBuyPlayer, selectedSellPlayer);
+        postTrade(selectedUser, selectedBuyPlayer, selectedSellPlayer);
     }
 
     return (

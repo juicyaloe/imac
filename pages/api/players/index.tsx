@@ -10,7 +10,7 @@ export default function handler(req, res) {
     if (req.method === 'GET') {
         const id = req.query.id;
 
-        const filePath = path.join(process.cwd(), 'data', 'database.json');
+        const filePath = path.join(process.cwd(), 'data', 'users.json');
         const fileData = fs.readFileSync(filePath);
 
         try {
