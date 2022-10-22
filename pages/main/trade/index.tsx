@@ -1,40 +1,23 @@
 import {Fragment, useEffect, useRef, useState, useCallback} from 'react';
 import classes from './index.module.css';
+import {getUsersData} from '../../../modules/api/user';
 
 function TradeHome(props) {
-    const userInputRef = useRef<HTMLSelectElement>(null);
+    const [userID, setUserID] = useState<any>('');
     const buyPlayerInputRef = useRef<HTMLSelectElement>(null);
     const sellPlayerInputRef = useRef<HTMLSelectElement>(null);
 
-    const [userData, setUserData] = useState<string[]>();
-    const [playerData, setPlayerData] = useState<string[]>();
+    const [usersData, setUsersData] = useState<any>();
 
     useEffect(() => {
         async function loadData() {
-            const userList = await fetchUserList();
-            await fetchPlayerList(userList[0]);
+            let temp = await getUsersData();
+            setUsersData(temp);
+            setUserID(temp[0].id.toString());
         }
 
         loadData();
     }, []);
-
-    async function fetchUserList() {
-        return await fetch('/api/users')
-            .then((response) => response.json())
-            .then((json) => {
-                setUserData(json.data);
-                return json.data;
-            });
-    }
-
-    async function fetchPlayerList(userId: string) {
-        return await fetch('/api/players/' + userId)
-            .then((response) => response.json())
-            .then((json) => {
-                setPlayerData(json.data);
-                return json.data;
-            });
-    }
 
     async function postTrade(
         targetId: string,
@@ -46,20 +29,14 @@ function TradeHome(props) {
             targetPlayer: targetPlayer,
             myPlayer: myPlayer,
         };
-
-        await fetch('/api/trades', {
-            method: 'POST',
-            body: JSON.stringify(tradeJson),
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        console.log(parseInt(targetId) * parseInt(targetPlayer));
+        console.log(targetId, targetPlayer, myPlayer);
     }
 
     function sellSubmitHandler(event) {
         event.preventDefault();
 
-        const selectedUser = userInputRef.current!.value;
+        const selectedUser = userID;
         const selectedBuyPlayer = buyPlayerInputRef.current!.value;
         const selectedSellPlayer = sellPlayerInputRef.current!.value;
 
@@ -79,14 +56,17 @@ function TradeHome(props) {
                     <select
                         name='main-trade-user'
                         id='main-trade-user'
-                        onChange={(e) => fetchPlayerList(e.target.value)}
-                        ref={userInputRef}
+                        onChange={(e) => setUserID(e.target.value)}
                     >
-                        {userData?.map((id) => (
-                            <option key={id} value={id}>
-                                {id}
+                        {usersData?.map((user) => (
+                            <option key={user.id} value={user.id}>
+                                {user.username}
                             </option>
-                        )) ?? <option>회원 정보를 불러오는 중입니다</option>}
+                        )) ?? (
+                            <option key={0} value={0}>
+                                데이터를 불러오고 있습니다
+                            </option>
+                        )}
                     </select>
                 </div>
                 <div className={classes.control}>
@@ -98,11 +78,26 @@ function TradeHome(props) {
                         id='main-trade-buyplayer'
                         ref={buyPlayerInputRef}
                     >
-                        {playerData?.map((id) => (
-                            <option key={id} value={id}>
-                                {id}
+                        {usersData?.map((user) => {
+                            if (user.id == userID) {
+                                if (user.players.length == 0) {
+                                    return (
+                                        <option key={0} value={0}>
+                                            해당 회원은 보유 선수가 없습니다
+                                        </option>
+                                    );
+                                }
+                                return user.players?.map((player) => (
+                                    <option key={player.id} value={player.id}>
+                                        {player.name}
+                                    </option>
+                                ));
+                            }
+                        }) ?? (
+                            <option key={0} value={0}>
+                                데이터를 불러오고 있습니다
                             </option>
-                        )) ?? <option>선수 정보를 불러오는 중입니다</option>}
+                        )}
                     </select>
                 </div>
                 <div className={`${classes.control} ${classes.lastcontrol}`}>
