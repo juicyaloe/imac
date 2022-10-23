@@ -2,6 +2,9 @@ import {Fragment, useRef, useEffect, useState} from 'react';
 import classes from './index.module.css';
 import {useQuery} from '@tanstack/react-query';
 
+import {useRecoilState} from 'recoil';
+import {testState} from '../../../states';
+
 async function fetchTrades() {
     let response = await fetch(process.env.NEXT_PUBLIC_DOMAIN + 'api/trades/', {
         headers: {
@@ -12,6 +15,8 @@ async function fetchTrades() {
 }
 
 export default function TradeAdmin() {
+    const [testData, setTestData] = useRecoilState(testState);
+
     const tradeListRef = useRef<HTMLSelectElement>(null);
     const [tradeList, setTradeList] = useState<any[]>();
 
@@ -42,6 +47,7 @@ export default function TradeAdmin() {
             id='admin-trade'
             onSubmit={(event) => event.preventDefault()}
         >
+            <div>{testData}</div>
             <div className={classes.control}>
                 <label htmlFor='admin-trade-list'>대기중인 거래 요청들</label>
                 <select

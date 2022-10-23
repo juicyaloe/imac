@@ -6,6 +6,7 @@ import {Fragment} from 'react';
 
 import {useRecoilState} from 'recoil';
 import {testState} from '../states';
+import Link from 'next/link';
 
 const Home: NextPage = () => {
     const [testData, setTestData] = useRecoilState(testState);
@@ -19,6 +20,9 @@ const Home: NextPage = () => {
                     setTestData(5);
                 }}
             ></button>
+            <Link href='/admin/trade'>
+                <button></button>
+            </Link>
         </Fragment>
     );
 };
