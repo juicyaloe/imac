@@ -1,14 +1,26 @@
 import {Fragment, useRef, useEffect, useState} from 'react';
 import classes from './index.module.css';
-import {getTrades} from '../../../modules/api/trade';
+import {useQuery} from '@tanstack/react-query';
+
+async function fetchTrades() {
+    let response = await fetch(process.env.NEXT_PUBLIC_DOMAIN + 'api/trades/', {
+        headers: {
+            Authorization: 'Token ' + process.env.NEXT_PUBLIC_TOKEN,
+        },
+    });
+    return response.json();
+}
 
 export default function TradeAdmin() {
     const tradeListRef = useRef<HTMLSelectElement>(null);
     const [tradeList, setTradeList] = useState<any[]>();
 
+    const {data, isLoading} = useQuery(['trades'], fetchTrades);
+    if (!isLoading) console.log(data);
+
     useEffect(() => {
         async function loadData() {
-            let tradeList = await getTrades();
+            let tradeList = await fetchTrades();
             setTradeList(tradeList);
         }
 

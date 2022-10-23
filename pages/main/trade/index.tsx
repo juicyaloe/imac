@@ -1,6 +1,18 @@
 import {Fragment, useEffect, useRef, useState, useCallback} from 'react';
 import classes from './index.module.css';
-import {getUsersData} from '../../../modules/api/user';
+
+async function getUsersData() {
+    let response = await fetch(
+        process.env.NEXT_PUBLIC_DOMAIN + 'api/users/profiles/',
+        {
+            headers: {
+                Authorization: 'Token ' + process.env.NEXT_PUBLIC_TOKEN,
+            },
+        },
+    );
+
+    return response.json();
+}
 
 function TradeHome(props) {
     const [userID, setUserID] = useState<any>('');
