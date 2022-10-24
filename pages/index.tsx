@@ -1,30 +1,29 @@
-import type {NextPage} from 'next';
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
-import {Fragment} from 'react';
+import classes from './index.module.css';
 
-import {useRecoilState} from 'recoil';
-import {testState} from '../states';
-import Link from 'next/link';
-
-const Home: NextPage = () => {
-    const [testData, setTestData] = useRecoilState(testState);
-
+function LogIn(props) {
     return (
-        <Fragment>
-            <div>{testData}</div>
-            <button
-                onClick={() => {
-                    console.log('클릭');
-                    setTestData(5);
-                }}
-            ></button>
-            <Link href='/admin/trade'>
-                <button></button>
-            </Link>
-        </Fragment>
+        <div className={classes.bbody}>
+            <div className={classes.body}></div>
+            <div className={classes.grad}></div>
+            <div className={classes.header}>
+                <div>
+                    성프야<span>Fantasy</span>
+                </div>
+            </div>
+            <br></br>
+            <div className={classes.login}>
+                <input type='text' placeholder='username' name='user'></input>
+                <br></br>
+                <input
+                    type='password'
+                    placeholder='password'
+                    name='password'
+                ></input>
+                <br></br>
+                <input type='button' value='Login'></input>
+            </div>
+        </div>
     );
-};
+}
 
-export default Home;
+export default LogIn;
