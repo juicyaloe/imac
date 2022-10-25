@@ -14,7 +14,7 @@ function LogIn(props) {
         let response = await fetch('http://52.78.87.49/api/users/login/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'applications/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(body),
         });
@@ -29,14 +29,14 @@ function LogIn(props) {
 
     const LoginFunc = (e) => {
         e.preventDefault();
-        if (!id) {
+        if (id === null) {
             return alert('ID를 입력해라 국노야ㅡㅡ');
-        } else if (!password) {
+        } else if (password === null) {
             return alert('Password를 입력해라 국노야ㅡㅡ');
         } else {
             let body = {
-                username: id,
-                password: password,
+                username: id.current?.value,
+                password: password.current?.value,
             };
             auth(body);
         }
