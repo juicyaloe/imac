@@ -1,22 +1,21 @@
 import classes from './index.module.css';
-import {atom, useRecoilState} from 'recoil';
-import {useState} from 'react';
+import {useRecoilState} from 'recoil';
+import {useRef} from 'react';
 import Link from 'next/link';
-
-const UserToken = atom({
-    key: 'token',
-    default: '',
-});
+import {UserToken} from '../states/users';
 
 function LogIn(props) {
     const [token, setToken] = useRecoilState(UserToken);
 
-    const [id, setId] = useState('');
-    const [password, setPassword] = useState('');
+    const id = useRef<HTMLInputElement>(null);
+    const password = useRef<HTMLInputElement>(null);
 
     async function auth(body) {
         let response = await fetch('http://52.78.87.49/api/users/login/', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'applications/json',
+            },
             body: JSON.stringify(body),
         });
 
@@ -54,19 +53,12 @@ function LogIn(props) {
             </div>
             <br></br>
             <div className={classes.login}>
-                <input
-                    type='text'
-                    id='id'
-                    placeholder='ID'
-                    value={id}
-                    onChange={(e) => setId(e.target.value)}
-                ></input>
+                <input type='text' id='id' placeholder='ID' ref={id}></input>
                 <br></br>
                 <input
                     type='password'
                     placeholder='password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    ref={password}
                 ></input>
                 <br></br>
                 <button onClick={(e) => LoginFunc(e)}>Login</button>
