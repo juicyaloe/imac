@@ -18,7 +18,7 @@
     bottom: -40px;
     width: auto;
     height: auto;
-    background-image: url('./src/bgimg.gif');
+    background-image: url('/src/bgimg.gif');
     background-size: cover;
     filter: blur(5px);
     z-index: 0;
