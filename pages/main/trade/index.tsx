@@ -16,8 +16,8 @@ async function getUsersData() {
 
 function TradeHome(props) {
     const [userID, setUserID] = useState<any>('');
-    const buyPlayerInputRef = useRef<HTMLSelectElement>(null);
-    const sellPlayerInputRef = useRef<HTMLSelectElement>(null);
+    const [buyPlayersID, setBuyPlayersID] = useState<any>('');
+    const [sellPlayersID, setSellPlayersID] = useState<any>('');
 
     const [usersData, setUsersData] = useState<any>();
 
@@ -49,11 +49,27 @@ function TradeHome(props) {
         event.preventDefault();
 
         const selectedUser = userID;
-        const selectedBuyPlayer = buyPlayerInputRef.current!.value;
-        const selectedSellPlayer = sellPlayerInputRef.current!.value;
-
         // 전송
-        postTrade(selectedUser, selectedBuyPlayer, selectedSellPlayer);
+        console.log(buyPlayersID, sellPlayersID);
+        for (let i = 0; i < buyPlayersID.length; i++)
+            for (let j = 0; j < sellPlayersID.length; j++) {
+                postTrade(selectedUser, buyPlayersID[i], sellPlayersID[j]);
+            }
+    }
+
+    function handleOnChange_buy(e) {
+        setBuyPlayersID(
+            [...e.target]
+                .filter((option) => option.selected)
+                .map((option) => option.value),
+        );
+    }
+    function handleOnChange_sell(e) {
+        setSellPlayersID(
+            [...e.target]
+                .filter((option) => option.selected)
+                .map((option) => option.value),
+        );
     }
 
     return (
@@ -88,7 +104,8 @@ function TradeHome(props) {
                     <select
                         name='main-trade-buyplayer'
                         id='main-trade-buyplayer'
-                        ref={buyPlayerInputRef}
+                        onChange={handleOnChange_buy}
+                        multiple
                     >
                         {usersData?.map((user) => {
                             if (user.id == userID) {
@@ -119,7 +136,8 @@ function TradeHome(props) {
                     <select
                         name='main-trade-sellplayer'
                         id='main-trade-sellplayer'
-                        ref={sellPlayerInputRef}
+                        multiple
+                        onChange={handleOnChange_sell}
                     >
                         <option value='1b'>1b 선수</option>
                         <option value='2b'>2b 선수</option>
