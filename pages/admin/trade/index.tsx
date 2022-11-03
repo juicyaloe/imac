@@ -32,9 +32,9 @@ export default function TradeAdmin() {
         loadData();
     }, []);
 
-    function checkSubmitHandler(data: string) {
+    function checkSubmitHandler(isAccpted: boolean) {
         const selectedTrade = tradeListRef.current?.value;
-        if (data === 'accept') {
+        if (isAccpted) {
             console.log(selectedTrade, '수락');
         } else {
             console.log(selectedTrade, '거절');
@@ -67,14 +67,14 @@ export default function TradeAdmin() {
             <div className={classes.submit}>
                 <button
                     onClick={() => {
-                        checkSubmitHandler('accept');
+                        checkSubmitHandler(true);
                     }}
                 >
                     수락하기
                 </button>
                 <button
                     onClick={() => {
-                        checkSubmitHandler('denied');
+                        checkSubmitHandler(false);
                     }}
                 >
                     거절하기
