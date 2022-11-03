@@ -7,6 +7,7 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import {RecoilRoot} from 'recoil';
 
 function MyApp({Component, pageProps}) {
+    // react-query setting
     const [queryClient] = useState(() => new QueryClient());
 
     return (
