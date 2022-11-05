@@ -17,7 +17,7 @@ async function fetchUserData() {
 }
 
 function TradeHome(props) {
-    const [userID, setUserID] = useState<any>('');
+    const [userID, setUserID] = useState<number | undefined>(undefined);
     const [buyPlayersID, setBuyPlayersID] = useState<any>('');
     const [sellPlayersID, setSellPlayersID] = useState<any>('');
 
@@ -44,17 +44,25 @@ function TradeHome(props) {
     function sellSubmitHandler(event) {
         event.preventDefault();
 
-        const selectedUser = userID;
-        // 전송
-        console.log(buyPlayersID, sellPlayersID);
-        for (let i = 0; i < buyPlayersID.length; i++)
-            for (let j = 0; j < sellPlayersID.length; j++) {
-                postTrade(selectedUser, buyPlayersID[i], sellPlayersID[j]);
-            }
+        // const selectedUser = userID;
+        // // 전송
+        // console.log(buyPlayersID, sellPlayersID);
+        // for (let i = 0; i < buyPlayersID.length; i++)
+        //     for (let j = 0; j < sellPlayersID.length; j++) {
+        //         postTrade(selectedUser, buyPlayersID[i], sellPlayersID[j]);
+        //     }
     }
 
-    function handleOnChange_user(e) {
-        console.log(e);
+    function handleOnChange_user(selectedID: number) {
+        setUserID(selectedID);
+    }
+
+    function handleOnChange_buy(e) {
+        setSellPlayersID(
+            [...e.target]
+                .filter((option) => option.selected)
+                .map((option) => option.value),
+        );
     }
 
     function handleOnChange_sell(e) {
@@ -73,9 +81,19 @@ function TradeHome(props) {
         >
             <div className={classes.controls}>
                 <ISelect
+                    id='main-trade-user'
+                    explainText='거래 대상 회원 선택'
                     value={data}
                     targetValue={'username'}
                     onChangeFunc={handleOnChange_user}
+                ></ISelect>
+                <ISelect
+                    id='main-trade-buyplayer'
+                    explainText='구매할 선수 선택'
+                    value={data}
+                    targetValue={'username'}
+                    onChangeFunc={handleOnChange_user}
+                    multiple
                 ></ISelect>
                 <button>거래 신청하기</button>
             </div>

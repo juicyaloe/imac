@@ -1,0 +1,43 @@
+.control {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.control label {
+    font-weight: bold;
+}
+
+/* not multiple */
+
+.control select {
+    font: inherit;
+    background-color: white;
+    border-radius: 6px;
+    width: 70%;
+    padding: 0.25rem;
+}
+
+/* multiple */
+
+.multiple_box {
+    font: inherit;
+    background-color: white;
+    border-radius: 6px;
+    width: 70%;
+    padding: 0.25rem;
+
+    border: 1px solid black;
+}
+
+.multiple_box div:active,
+.multiple_box div:hover {
+    background-color: skyblue;
+    color: black;
+}
+
+.clicked {
+    background-color: skyblue;
+}
