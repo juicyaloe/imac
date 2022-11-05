@@ -52,3 +52,27 @@
     margin: 40px;
     float: right;
 }
+
+.content {
+    padding-top: 30px;
+    padding-left: 50px;
+}
+.infoName {
+    font-size: 60px;
+    font-weight: 600;
+}
+
+.infoSchool {
+    font-size: 25px;
+    font-weight: 200;
+}
+.info {
+    padding-right: 50px;
+    font-size: 80px;
+    font-weight: 350;
+    float: left;
+}
+.infoTag {
+    font-size: 15px;
+    font-weight: 350;
+}
