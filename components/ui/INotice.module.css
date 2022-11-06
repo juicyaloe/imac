@@ -8,9 +8,6 @@
     font-weight: bold;
     font-size: 17px;
     padding: 1rem;
-
-    opacity: 0;
-    transition: all 1s;
 }
 
 .success {
@@ -21,12 +18,4 @@
 .fail {
     background-color: red;
     color: white;
-}
-
-.on {
-    opacity: 1;
-}
-
-.off {
-    opacity: 0;
 }
