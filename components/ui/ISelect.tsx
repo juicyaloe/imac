@@ -3,81 +3,105 @@ import {useEffect, useState} from 'react';
 import classes from './ISelect.module.css';
 
 type Props = {
-    id: string;
-    explainText: string;
-    value: any[];
-    targetValue: string;
-    onChangeFunc: (any) => void;
-    multiple?: boolean;
-};
+    readonly id: string;
+    readonly text: string;
 
-const filter_func = (targetValue: string) =>
-    R.pipe(R.project(['id', targetValue]), R.flatten);
+    readonly target: any[];
+    readonly keyPropName: string;
+    readonly dataPropName: string;
+
+    readonly onChangeFunc: (any) => void;
+
+    readonly multiple?: boolean;
+};
 
 export default function ISelect({
     id,
-    explainText,
-    value,
-    targetValue,
+    text,
+    target = [],
+    keyPropName,
+    dataPropName,
     onChangeFunc,
     multiple = false,
 }: Props) {
-    // data 추출
-    let dataList: any[] = filter_func(targetValue)(value);
-    onChangeFunc(Number(dataList[0].id));
-
-    // multiple 전용 변수
-    const [selectedList, setSelectedList] = useState<any>([]);
+    const [selectedList, setSelectedList] = useState<any[]>([...target]);
 
     useEffect(() => {
-        let temp = [...dataList];
+        console.log('initialize', id);
+        multiple
+            ? onChangeFunc([] as number[])
+            : onChangeFunc(Number(target[0][keyPropName]));
+    }, []);
+
+    useEffect(() => {
+        // for multiple
+        console.log('multiple initialize', id);
+        let temp = [...target];
         temp.forEach((data) => (data.isSelected = false));
         setSelectedList(temp);
-    }, []);
+    }, [target]);
+
+    function changeSelectedList(selectedID: number) {
+        let temp = [...selectedList];
+        temp.filter((data) => data[keyPropName] == selectedID).forEach(
+            (data) => (data.isSelected = !data.isSelected),
+        );
+        setSelectedList(temp);
+        onChangeFunc(
+            temp
+                .filter((data) => data.isSelected)
+                .map((data) => data[keyPropName] as number),
+        );
+    }
 
     if (!multiple) {
         return (
             <div className={classes.control}>
-                <label htmlFor={id}>{explainText}</label>
+                <label htmlFor={id}>{text}</label>
                 <select
                     name={id}
                     id={id}
                     onChange={(e) => onChangeFunc(Number(e.target.value))}
                 >
-                    {dataList.map((data) => (
-                        <option key={data.id} value={data.id}>
-                            {data[targetValue]}
+                    {selectedList.map((data) => (
+                        <option
+                            key={data[keyPropName]}
+                            value={data[keyPropName]}
+                        >
+                            {data[dataPropName]}
                         </option>
                     ))}
                 </select>
             </div>
         );
     } else {
-        console.log('현재 상태', selectedList);
+        if (selectedList.length == 0) {
+            return (
+                <div className={classes.control}>
+                    <label htmlFor={id}>{text}</label>
+                    <div id={id} className={classes.no_data}>
+                        데이터가 없습니다
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div className={classes.control}>
-                <label htmlFor={id}>{explainText}</label>
+                <label htmlFor={id}>{text}</label>
                 <div id={id} className={classes.multiple_box}>
                     {selectedList.map((data) => (
                         <div
-                            key={data.id}
+                            key={data[keyPropName]}
+                            data-id={data[keyPropName]}
                             className={`${
                                 data.isSelected ? classes.clicked : ''
                             }`}
-                            data-id={data.id}
-                            onClick={(e: any) => {
-                                let temp = [...selectedList];
-                                temp.filter(
-                                    (data) => data.id == e.target.dataset.id,
-                                ).forEach(
-                                    (data) =>
-                                        (data.isSelected = !data.isSelected),
-                                );
-                                setSelectedList(temp);
-                            }}
+                            onClick={(e: any) =>
+                                changeSelectedList(Number(e.target.dataset.id))
+                            }
                         >
-                            {data[targetValue]}
+                            &nbsp;{data[dataPropName]}
                         </div>
                     ))}
                 </div>

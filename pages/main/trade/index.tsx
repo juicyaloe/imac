@@ -1,7 +1,18 @@
-import {Fragment, useEffect, useRef, useState, useCallback} from 'react';
+import {
+    Fragment,
+    useEffect,
+    useRef,
+    useState,
+    useCallback,
+    useMemo,
+} from 'react';
 import {useQuery} from '@tanstack/react-query';
 import classes from './index.module.css';
 import ISelect from '../../../components/ui/ISelect';
+import * as R from 'ramda';
+
+import {useRecoilState} from 'recoil';
+import {UserKey} from '../../../states/users';
 
 async function fetchUserData() {
     let response = await fetch(
@@ -16,33 +27,48 @@ async function fetchUserData() {
     return response.json();
 }
 
+const compUser = (userid: number) => (data) => data.id == userid;
+
+const getPlayers = (selectedUser: number) =>
+    R.pipe(
+        R.filter(compUser(selectedUser)),
+        R.map(R.prop('players')),
+        R.unnest,
+    );
+
 function TradeHome(props) {
+    const [key] = useRecoilState(UserKey);
+
     const [userID, setUserID] = useState<number | undefined>(undefined);
-    const [buyPlayersID, setBuyPlayersID] = useState<any>('');
-    const [sellPlayersID, setSellPlayersID] = useState<any>('');
+    const [buyPlayersID, setBuyPlayersID] = useState<number[] | undefined>(
+        undefined,
+    );
+    const [sellPlayersID, setSellPlayersID] = useState<number[] | undefined>(
+        undefined,
+    );
 
     const {data, isLoading} = useQuery(['user-data'], fetchUserData);
-
-    if (isLoading) {
-        return <div>데이터를 불러오는 중입니다.</div>;
-    }
+    const [selectedPlayers, setSelectedPlayers] = useState<any>(undefined);
+    const [myPlayers, setMyPlayers] = useState<any>(undefined);
 
     async function postTrade(
-        targetId: string,
-        targetPlayer: string,
-        myPlayer: string,
+        targetId: number,
+        targetPlayer: number[],
+        myPlayer: number[],
     ) {
         const tradeJson = {
             targetId: targetId,
             targetPlayer: targetPlayer,
             myPlayer: myPlayer,
         };
-        console.log(parseInt(targetId) * parseInt(targetPlayer));
-        console.log(targetId, targetPlayer, myPlayer);
     }
 
     function sellSubmitHandler(event) {
         event.preventDefault();
+
+        console.log(userID, 'USERID');
+        console.log(buyPlayersID, 'buyPlayersID');
+        console.log(sellPlayersID, 'sellPlayersID');
 
         // const selectedUser = userID;
         // // 전송
@@ -53,24 +79,20 @@ function TradeHome(props) {
         //     }
     }
 
-    function handleOnChange_user(selectedID: number) {
+    function onChangeUser(selectedID: number) {
         setUserID(selectedID);
+        setSelectedPlayers([...getPlayers(selectedID)(data)]);
+        setMyPlayers([...getPlayers(key.id)(data)]);
+        setBuyPlayersID([]);
+        setSellPlayersID([]);
     }
 
-    function handleOnChange_buy(e) {
-        setSellPlayersID(
-            [...e.target]
-                .filter((option) => option.selected)
-                .map((option) => option.value),
-        );
+    function onChangeBuyPlayer(selectedID: number[]) {
+        setBuyPlayersID([...selectedID]);
     }
 
-    function handleOnChange_sell(e) {
-        setSellPlayersID(
-            [...e.target]
-                .filter((option) => option.selected)
-                .map((option) => option.value),
-        );
+    function onChangeSellPlayer(selectedID: number[]) {
+        setSellPlayersID([...selectedID]);
     }
 
     return (
@@ -80,21 +102,44 @@ function TradeHome(props) {
             onSubmit={sellSubmitHandler}
         >
             <div className={classes.controls}>
-                <ISelect
-                    id='main-trade-user'
-                    explainText='거래 대상 회원 선택'
-                    value={data}
-                    targetValue={'username'}
-                    onChangeFunc={handleOnChange_user}
-                ></ISelect>
-                <ISelect
-                    id='main-trade-buyplayer'
-                    explainText='구매할 선수 선택'
-                    value={data}
-                    targetValue={'username'}
-                    onChangeFunc={handleOnChange_user}
-                    multiple
-                ></ISelect>
+                {!isLoading ? (
+                    <ISelect
+                        id='main-trade-user'
+                        text='거래 대상 회원 선택'
+                        target={data.filter((data) => data.id != key.id)}
+                        keyPropName={'id'}
+                        dataPropName={'username'}
+                        onChangeFunc={onChangeUser}
+                    ></ISelect>
+                ) : (
+                    <div>회원 정보를 불러오고 있습니다.</div>
+                )}
+                {selectedPlayers ? (
+                    <ISelect
+                        id='main-trade-buyplayer'
+                        text='구매할 선수 선택'
+                        target={selectedPlayers}
+                        keyPropName={'id'}
+                        dataPropName={'name'}
+                        onChangeFunc={onChangeBuyPlayer}
+                        multiple
+                    ></ISelect>
+                ) : (
+                    <div>선수 정보를 불러오고 있습니다.</div>
+                )}
+                {myPlayers ? (
+                    <ISelect
+                        id='main-trade-sellplayer'
+                        text='판매할 선수 선택'
+                        target={myPlayers}
+                        keyPropName={'id'}
+                        dataPropName={'name'}
+                        onChangeFunc={onChangeSellPlayer}
+                        multiple
+                    ></ISelect>
+                ) : (
+                    <div>내 선수 정보를 불러오고 있습니다.</div>
+                )}
                 <button>거래 신청하기</button>
             </div>
         </form>

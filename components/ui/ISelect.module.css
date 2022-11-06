@@ -38,6 +38,11 @@
     color: black;
 }
 
+.no_data {
+    font: inherit;
+    width: 70%;
+}
+
 .clicked {
     background-color: skyblue;
 }
