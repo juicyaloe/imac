@@ -27,7 +27,7 @@ export default function ISelect({
     const [selectedList, setSelectedList] = useState<any[]>([...target]);
 
     useEffect(() => {
-        console.log('initialize', id);
+        // console.log('initialize', id);
         multiple
             ? onChangeFunc([] as number[])
             : onChangeFunc(Number(target[0][keyPropName]));
@@ -35,7 +35,7 @@ export default function ISelect({
 
     useEffect(() => {
         // for multiple
-        console.log('multiple initialize', id);
+        // console.log('multiple initialize', id);
         let temp = [...target];
         temp.forEach((data) => (data.isSelected = false));
         setSelectedList(temp);
