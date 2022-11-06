@@ -4,7 +4,7 @@ export default function Test() {
     return (
         <div>
             <div>asdqww</div>
-            <INotice></INotice>
+            <INotice text={'로그인에 성공했습니다'} mode={'Success'}></INotice>
         </div>
     );
 }
