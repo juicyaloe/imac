@@ -1,7 +1,20 @@
-import {Fragment, useEffect, useRef, useState, useCallback} from 'react';
+import {
+    Fragment,
+    useEffect,
+    useRef,
+    useState,
+    useCallback,
+    useMemo,
+} from 'react';
+import {useQuery} from '@tanstack/react-query';
 import classes from './index.module.css';
+import ISelect from '../../../components/ui/ISelect';
+import * as R from 'ramda';
 
-async function getUsersData() {
+import {useRecoilState} from 'recoil';
+import {UserKey} from '../../../states/users';
+
+async function fetchUserData() {
     let response = await fetch(
         process.env.NEXT_PUBLIC_DOMAIN + 'api/users/profiles/',
         {
@@ -14,62 +27,72 @@ async function getUsersData() {
     return response.json();
 }
 
+const compUser = (userid: number) => (data) => data.id == userid;
+
+const getPlayers = (selectedUser: number) =>
+    R.pipe(
+        R.filter(compUser(selectedUser)),
+        R.map(R.prop('players')),
+        R.unnest,
+    );
+
 function TradeHome(props) {
-    const [userID, setUserID] = useState<any>('');
-    const [buyPlayersID, setBuyPlayersID] = useState<any>('');
-    const [sellPlayersID, setSellPlayersID] = useState<any>('');
+    const [key] = useRecoilState(UserKey);
 
-    const [usersData, setUsersData] = useState<any>();
+    const [userID, setUserID] = useState<number | undefined>(undefined);
+    const [buyPlayersID, setBuyPlayersID] = useState<number[] | undefined>(
+        undefined,
+    );
+    const [sellPlayersID, setSellPlayersID] = useState<number[] | undefined>(
+        undefined,
+    );
 
-    useEffect(() => {
-        async function loadData() {
-            let temp = await getUsersData();
-            setUsersData(temp);
-            setUserID(temp[0].id.toString());
-        }
-
-        loadData();
-    }, []);
+    const {data, isLoading} = useQuery(['user-data'], fetchUserData);
+    const [selectedPlayers, setSelectedPlayers] = useState<any>(undefined);
+    const [myPlayers, setMyPlayers] = useState<any>(undefined);
 
     async function postTrade(
-        targetId: string,
-        targetPlayer: string,
-        myPlayer: string,
+        targetId: number,
+        targetPlayer: number[],
+        myPlayer: number[],
     ) {
         const tradeJson = {
             targetId: targetId,
             targetPlayer: targetPlayer,
             myPlayer: myPlayer,
         };
-        console.log(parseInt(targetId) * parseInt(targetPlayer));
-        console.log(targetId, targetPlayer, myPlayer);
     }
 
     function sellSubmitHandler(event) {
         event.preventDefault();
 
-        const selectedUser = userID;
-        // 전송
-        console.log(buyPlayersID, sellPlayersID);
-        for (let i = 0; i < buyPlayersID.length; i++)
-            for (let j = 0; j < sellPlayersID.length; j++) {
-                postTrade(selectedUser, buyPlayersID[i], sellPlayersID[j]);
-            }
+        console.log(userID, 'USERID');
+        console.log(buyPlayersID, 'buyPlayersID');
+        console.log(sellPlayersID, 'sellPlayersID');
+
+        // const selectedUser = userID;
+        // // 전송
+        // console.log(buyPlayersID, sellPlayersID);
+        // for (let i = 0; i < buyPlayersID.length; i++)
+        //     for (let j = 0; j < sellPlayersID.length; j++) {
+        //         postTrade(selectedUser, buyPlayersID[i], sellPlayersID[j]);
+        //     }
     }
 
-    function handleOnChange_buy(e) {
-        setBuyPlayersID(
-            [...e.target]
-                .filter((option) => option.selected)
-                .map((option) => option.value),
-        );
+    function onChangeUser(selectedID: number) {
+        setUserID(selectedID);
+        setSelectedPlayers([...getPlayers(selectedID)(data)]);
+        setMyPlayers([...getPlayers(key.id)(data)]);
+        setBuyPlayersID([]);
+        setSellPlayersID([]);
     }
-    function handleOnChange_sell(e) {
-        setSellPlayersID(
-            [...e.target]
-                .filter((option) => option.selected)
-                .map((option) => option.value),
-        );
+
+    function onChangeBuyPlayer(selectedID: number[]) {
+        setBuyPlayersID([...selectedID]);
+    }
+
+    function onChangeSellPlayer(selectedID: number[]) {
+        setSellPlayersID([...selectedID]);
     }
 
     return (
@@ -79,71 +102,44 @@ function TradeHome(props) {
             onSubmit={sellSubmitHandler}
         >
             <div className={classes.controls}>
-                <div className={classes.control}>
-                    <label htmlFor='main-trade-user'>거래 대상 회원 선택</label>
-                    <select
-                        name='main-trade-user'
+                {!isLoading ? (
+                    <ISelect
                         id='main-trade-user'
-                        onChange={(e) => setUserID(e.target.value)}
-                    >
-                        {usersData?.map((user) => (
-                            <option key={user.id} value={user.id}>
-                                {user.username}
-                            </option>
-                        )) ?? (
-                            <option key={0} value={0}>
-                                데이터를 불러오고 있습니다
-                            </option>
-                        )}
-                    </select>
-                </div>
-                <div className={classes.control}>
-                    <label htmlFor='main-trade-buyplayer'>
-                        구매할 선수 선택
-                    </label>
-                    <select
-                        name='main-trade-buyplayer'
+                        text='거래 대상 회원 선택'
+                        target={data.filter((data) => data.id != key.id)}
+                        keyPropName={'id'}
+                        dataPropName={'username'}
+                        onChangeFunc={onChangeUser}
+                    ></ISelect>
+                ) : (
+                    <div>회원 정보를 불러오고 있습니다.</div>
+                )}
+                {selectedPlayers ? (
+                    <ISelect
                         id='main-trade-buyplayer'
-                        onChange={handleOnChange_buy}
+                        text='구매할 선수 선택'
+                        target={selectedPlayers}
+                        keyPropName={'id'}
+                        dataPropName={'name'}
+                        onChangeFunc={onChangeBuyPlayer}
                         multiple
-                    >
-                        {usersData?.map((user) => {
-                            if (user.id == userID) {
-                                if (user.players.length == 0) {
-                                    return (
-                                        <option key={0} value={0}>
-                                            해당 회원은 보유 선수가 없습니다
-                                        </option>
-                                    );
-                                }
-                                return user.players?.map((player) => (
-                                    <option key={player.id} value={player.id}>
-                                        {player.name}
-                                    </option>
-                                ));
-                            }
-                        }) ?? (
-                            <option key={0} value={0}>
-                                데이터를 불러오고 있습니다
-                            </option>
-                        )}
-                    </select>
-                </div>
-                <div className={`${classes.control} ${classes.lastcontrol}`}>
-                    <label htmlFor='main-trade-sellplayer'>
-                        판매할 선수 선택
-                    </label>
-                    <select
-                        name='main-trade-sellplayer'
+                    ></ISelect>
+                ) : (
+                    <div>선수 정보를 불러오고 있습니다.</div>
+                )}
+                {myPlayers ? (
+                    <ISelect
                         id='main-trade-sellplayer'
+                        text='판매할 선수 선택'
+                        target={myPlayers}
+                        keyPropName={'id'}
+                        dataPropName={'name'}
+                        onChangeFunc={onChangeSellPlayer}
                         multiple
-                        onChange={handleOnChange_sell}
-                    >
-                        <option value='1b'>1b 선수</option>
-                        <option value='2b'>2b 선수</option>
-                        <option value='3b'>3b 선수</option>
-                    </select>
-                </div>
+                    ></ISelect>
+                ) : (
+                    <div>내 선수 정보를 불러오고 있습니다.</div>
+                )}
                 <button>거래 신청하기</button>
             </div>
         </form>
