@@ -1,11 +1,13 @@
 import classes from './index.module.css';
 import {useRecoilState} from 'recoil';
-import {useRef} from 'react';
+import {useRef, useState, useEffect} from 'react';
 import Link from 'next/link';
 import {UserToken} from '../states/users';
-
+import INotice from '../components/ui/INotice';
 function LogIn(props) {
     const [token, setToken] = useRecoilState(UserToken);
+    const [isLoginFailed, setIsLoginFailed] = useState(false);
+    const [loginText, setLoginText] = useState<string>();
 
     const id = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
@@ -23,16 +25,34 @@ function LogIn(props) {
             let response_json = await response.json();
             setToken(response_json.Token);
         } else {
-            return alert('ID 또는 PW 를 다시 확인해라 국노야ㅡㅡ');
+            setIsLoginFailed(true);
+            setLoginText(
+                '로그인 실패 : ID 또는 PW 를 다시 확인해라 국노야ㅡㅡ',
+            );
+            return;
         }
     }
 
+    useEffect(() => {
+        let onTimer = setTimeout(() => {
+            setIsLoginFailed(false);
+        }, 3000);
+
+        return () => {
+            clearTimeout(onTimer);
+        };
+    }, [isLoginFailed]);
+
     const LoginFunc = (e) => {
         e.preventDefault();
-        if (id === null) {
-            return alert('ID를 입력해라 국노야ㅡㅡ');
-        } else if (password === null) {
-            return alert('Password를 입력해라 국노야ㅡㅡ');
+        if (id.current!.value === '') {
+            setIsLoginFailed(true);
+            setLoginText('로그인 실패 : ID를 입력해라 국노야ㅡㅡ');
+            return;
+        } else if (password.current!.value === '') {
+            setIsLoginFailed(true);
+            setLoginText('로그인 실패 : Password를 입력해라 국노야ㅡㅡ');
+            return;
         } else {
             let body = {
                 username: id.current?.value,
@@ -65,6 +85,7 @@ function LogIn(props) {
                 <Link href='/signup'>
                     <button>Sign Up</button>
                 </Link>
+                <INotice text={`${loginText}`} mode={isLoginFailed}></INotice>
             </div>
         </div>
     );
