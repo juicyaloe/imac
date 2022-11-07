@@ -27,10 +27,10 @@ function LogIn(props) {
         if (response.status === 200) {
             let response_json = await response.json();
             setToken(response_json.Token);
-            handleIsFlow(true);
+            setIsFlow(true);
             setLoginSetting(['로그인 성공', 'blue']);
         } else {
-            handleIsFlow(true);
+            setIsFlow(true);
             setLoginSetting([
                 '로그인 실패 : ID 또는 PW 를 다시 확인해라 국노야ㅡㅡ',
                 'red',
@@ -42,11 +42,11 @@ function LogIn(props) {
     const LoginFunc = (e) => {
         e.preventDefault();
         if (id.current!.value === '') {
-            handleIsFlow(true);
+            setIsFlow(true);
             setLoginSetting(['로그인 실패 : ID를 입력해라 국노야ㅡㅡ', 'red']);
             return;
         } else if (password.current!.value === '') {
-            handleIsFlow(true);
+            setIsFlow(true);
             setLoginSetting([
                 '로그인 실패 : Password를 입력해라 국노야ㅡㅡ',
                 'red',
@@ -59,10 +59,6 @@ function LogIn(props) {
             };
             auth(body);
         }
-    };
-
-    const handleIsFlow = (value: boolean) => {
-        setIsFlow(value);
     };
 
     return (
@@ -103,7 +99,7 @@ function LogIn(props) {
                     text={loginSetting[0]}
                     color={loginSetting[1]}
                     isFlow={isFlow}
-                    handleIsFlow={handleIsFlow}
+                    handleIsFlow={setIsFlow}
                 ></INotice>
             </div>
         </div>
