@@ -4,12 +4,16 @@ import {useRef, useState, useEffect} from 'react';
 import Link from 'next/link';
 import {UserToken} from '../states/users';
 import INotice from '../components/ui/INotice';
+interface ISettings {
+    text: string;
+    color: string;
+}
 function LogIn(props) {
     const [token, setToken] = useRecoilState(UserToken);
-    const [loginSetting, setLoginSetting] = useState<[string, string]>([
-        '',
-        '',
-    ]);
+    const [loginSetting, setLoginSetting] = useState<ISettings>({
+        text: '',
+        color: '',
+    });
     const [isFlow, setIsFlow] = useState<boolean>(false);
 
     const id = useRef<HTMLInputElement>(null);
@@ -28,13 +32,13 @@ function LogIn(props) {
             let response_json = await response.json();
             setToken(response_json.Token);
             setIsFlow(true);
-            setLoginSetting(['로그인 성공', 'blue']);
+            setLoginSetting({text: '로그인 성공', color: 'blue'});
         } else {
             setIsFlow(true);
-            setLoginSetting([
-                '로그인 실패 : ID 또는 PW 를 다시 확인해라 국노야ㅡㅡ',
-                'red',
-            ]);
+            setLoginSetting({
+                text: '로그인 실패 : ID 또는 PW 를 다시 확인해라 국노야ㅡㅡ',
+                color: 'red',
+            });
             return;
         }
     }
@@ -43,14 +47,17 @@ function LogIn(props) {
         e.preventDefault();
         if (id.current!.value === '') {
             setIsFlow(true);
-            setLoginSetting(['로그인 실패 : ID를 입력해라 국노야ㅡㅡ', 'red']);
+            setLoginSetting({
+                text: '로그인 실패 : ID를 입력해라 국노야ㅡㅡ',
+                color: 'red',
+            });
             return;
         } else if (password.current!.value === '') {
             setIsFlow(true);
-            setLoginSetting([
-                '로그인 실패 : Password를 입력해라 국노야ㅡㅡ',
-                'red',
-            ]);
+            setLoginSetting({
+                text: '로그인 실패 : Password를 입력해라 국노야ㅡㅡ',
+                color: 'red',
+            });
             return;
         } else {
             let body = {
@@ -96,8 +103,8 @@ function LogIn(props) {
                     <button>Sign Up</button>
                 </Link>
                 <INotice
-                    text={loginSetting[0]}
-                    color={loginSetting[1]}
+                    text={loginSetting.text}
+                    color={loginSetting.color}
                     isFlow={isFlow}
                     handleIsFlow={setIsFlow}
                 ></INotice>
