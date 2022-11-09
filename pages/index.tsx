@@ -69,47 +69,49 @@ function LogIn(props) {
     };
 
     return (
-        <div className={classes.bbody}>
-            <div className={classes.body}></div>
-            <div className={classes.grad}></div>
-            <div className={classes.header}>
-                <div>
-                    성프야<span>Fantasy</span>
+        <>
+            <div className={classes.bbody}>
+                <div className={classes.body}></div>
+                <div className={classes.grad}></div>
+                <div className={classes.header}>
+                    <div>
+                        성프야<span>Fantasy</span>
+                    </div>
+                </div>
+                <br></br>
+                <div className={classes.login}>
+                    <input
+                        type='text'
+                        id='id'
+                        placeholder='ID'
+                        ref={id}
+                        onKeyPress={(e) => {
+                            if (e.key == 'Enter') LoginFunc(e);
+                        }}
+                    ></input>
+                    <br></br>
+                    <input
+                        type='password'
+                        placeholder='password'
+                        ref={password}
+                        onKeyPress={(e) => {
+                            if (e.key == 'Enter') LoginFunc(e);
+                        }}
+                    ></input>
+                    <br></br>
+                    <button onClick={(e) => LoginFunc(e)}>Login</button>
+                    <Link href='/signup'>
+                        <button>Sign Up</button>
+                    </Link>
                 </div>
             </div>
-            <br></br>
-            <div className={classes.login}>
-                <input
-                    type='text'
-                    id='id'
-                    placeholder='ID'
-                    ref={id}
-                    onKeyPress={(e) => {
-                        if (e.key == 'Enter') LoginFunc(e);
-                    }}
-                ></input>
-                <br></br>
-                <input
-                    type='password'
-                    placeholder='password'
-                    ref={password}
-                    onKeyPress={(e) => {
-                        if (e.key == 'Enter') LoginFunc(e);
-                    }}
-                ></input>
-                <br></br>
-                <button onClick={(e) => LoginFunc(e)}>Login</button>
-                <Link href='/signup'>
-                    <button>Sign Up</button>
-                </Link>
-                <INotice
-                    text={loginSetting.text}
-                    color={loginSetting.color}
-                    isFlow={isFlow}
-                    handleIsFlow={setIsFlow}
-                ></INotice>
-            </div>
-        </div>
+            <INotice
+                text={loginSetting.text}
+                color={loginSetting.color}
+                isFlow={isFlow}
+                handleIsFlow={setIsFlow}
+            ></INotice>
+        </>
     );
 }
 

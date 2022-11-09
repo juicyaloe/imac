@@ -1,8 +1,9 @@
+import IChoice from '../../components/ui/IChoice';
 function SignUp(props) {
     return (
-        <div>
-            <a>SIGN UP</a>
-        </div>
+        <>
+            <IChoice></IChoice>
+        </>
     );
 }
 
