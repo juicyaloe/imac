@@ -5,7 +5,12 @@ function SignUp(props) {
     const [bol, setBol] = useState<boolean>(true);
     return (
         <>
-            <IChoice width='20rem' onClickBtn={setBol} title='Tilte'>
+            <IChoice
+                width='20rem'
+                height='20rem'
+                onClickBtn={setBol}
+                title='Tilte'
+            >
                 <IList list={['asdf', 'asdgasg', 'gagadgad', 'a']}></IList>
             </IChoice>
             <div>{bol ? 'true' : 'false'}</div>
