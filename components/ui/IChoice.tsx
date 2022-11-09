@@ -1,21 +1,22 @@
 import classes from './IChoice.module.css';
 
-const IChoice = () => {
+interface Prop {
+    width: string;
+    height: string;
+    title: string;
+}
+
+const IChoice = ({width = '18rem', height = '13rem', title = '알림'}: Prop) => {
     const onClick = () => {
         console.log('asdf');
-    };
-    const styles = {
-        // 가변크기 테스트
-        width: '1000px',
-        height: '1000px',
     };
     return (
         <div>
             <div
                 className={`${classes.test_container} ${classes.body}`}
-                style={styles}
+                style={{width, height}}
             >
-                <div className={classes.titlebox}>Title</div>
+                <div className={classes.titlebox}>{title}</div>
                 <div className={classes.textbox_container}>Context :</div>
                 <div className={classes.btnbox}>
                     <button className={classes.btn} onClick={onClick}>
