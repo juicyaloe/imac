@@ -3,5 +3,5 @@ import IList from '../components/ui/IList';
 
 export default function Test() {
     const dataList = ['dasd', 'dwd'];
-    return <IList list={dataList}></IList>;
+    return <IList list={dataList}>aa</IList>;
 }
