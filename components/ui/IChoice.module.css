@@ -17,17 +17,12 @@
     display: flex;
     background-color: rgb(255, 255, 255);
     line-height: 1;
-    justify-content: center;
-}
-.textbox {
-    display: flex;
     font: inherit;
     color: black;
     font-size: 17px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    margin: 25px;
+    padding: 2rem;
     align-items: center;
+    justify-content: center;
 }
 .btnbox {
     display: flex;
@@ -41,13 +36,10 @@
 }
 .btn {
     flex-grow: 1;
-    margin: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
+    margin: 0.7rem;
     border: 3px solid currentColor;
     border-radius: 15px;
-    min-width: 60px;
-
+    min-width: 4rem;
     font-size: 15px;
     font-weight: bold;
     background: #26ab1c;
@@ -56,12 +48,12 @@
 }
 .test_container {
     display: grid;
-    min-width: 300px;
-    max-width: 450px;
-    min-height: 200px;
-    max-height: 300px;
+    min-width: 18rem;
+    max-width: 27rem;
+    min-height: 13rem;
+    max-height: 19rem;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 6fr 1fr;
+    grid-template-rows: 1fr 7fr 2fr;
 
     line-height: 1.4;
     background: rgba(0, 0, 0, 0);

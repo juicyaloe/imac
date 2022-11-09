@@ -16,9 +16,7 @@ const IChoice = () => {
                 style={styles}
             >
                 <div className={classes.titlebox}>Title</div>
-                <div className={classes.textbox_container}>
-                    <div className={classes.textbox}>Context :</div>
-                </div>
+                <div className={classes.textbox_container}>Context :</div>
                 <div className={classes.btnbox}>
                     <button className={classes.btn} onClick={onClick}>
                         Btn A
