@@ -70,7 +70,9 @@
 
 .body {
     position: fixed;
-    margin: 0 auto;
+    margin: auto auto;
+    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
 }

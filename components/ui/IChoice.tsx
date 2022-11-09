@@ -10,8 +10,11 @@ const IChoice = () => {
         height: '1000px',
     };
     return (
-        <div className={classes.body}>
-            <div className={classes.test_container} style={styles}>
+        <div>
+            <div
+                className={`${classes.test_container} ${classes.body}`}
+                style={styles}
+            >
                 <div className={classes.titlebox}>Title</div>
                 <div className={classes.textbox_container}>
                     <div className={classes.textbox}>Context :</div>
