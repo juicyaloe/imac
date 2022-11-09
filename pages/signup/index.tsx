@@ -1,10 +1,5 @@
-import IChoice from '../../components/ui/IChoice';
 function SignUp(props) {
-    return (
-        <>
-            <IChoice></IChoice>
-        </>
-    );
+    return <></>;
 }
 
 export default SignUp;
