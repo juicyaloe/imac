@@ -13,16 +13,19 @@
     text-align: left;
     align-items: center;
 }
-.textbox_container {
+.textbox {
     display: flex;
     background-color: rgb(255, 255, 255);
     line-height: 1;
+
     font: inherit;
     color: black;
     font-size: 17px;
     padding: 2rem;
-    align-items: center;
+
+    align-items: left;
     justify-content: center;
+    flex-direction: column;
 }
 .btnbox {
     display: flex;
@@ -40,18 +43,20 @@
     border: 3px solid currentColor;
     border-radius: 15px;
     min-width: 4rem;
-    font-size: 15px;
-    font-weight: bold;
     background: #26ab1c;
 
+    font-size: 15px;
+    font-weight: bold;
     text-align: center;
 }
 .test_container {
     display: grid;
+
     min-width: 18rem;
     max-width: 27rem;
     min-height: 13rem;
     max-height: 19rem;
+
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 7fr 2fr;
 
