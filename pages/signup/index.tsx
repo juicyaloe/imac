@@ -1,19 +1,36 @@
 import IChoice from '../../components/ui/IChoice';
 import IList from '../../components/ui/IList';
 import {useState} from 'react';
+
+interface BtnSet {
+    name: string;
+    Fnc: (...any) => void;
+    value: any[];
+}
 function SignUp(props) {
-    const [bol, setBol] = useState<boolean>(true);
+    const [isFlow, setIsFlow] = useState<boolean>(false);
+    const [value, setValue] = useState<boolean>(true);
+
+    const btnSet: BtnSet[] = [
+        {name: '수락', Fnc: setValue, value: [true]},
+        {name: '거절', Fnc: setValue, value: [false]},
+    ];
+
     return (
         <>
+            <button onClick={(e) => setIsFlow(true)}>make IChoice</button>
             <IChoice
-                width='20rem'
-                height='20rem'
-                onClickBtn={setBol}
-                title='Tilte'
+                width='40rem'
+                height='40rem'
+                title='제목'
+                isFlow={isFlow}
+                handleIsFlow={setIsFlow}
+                Btn={btnSet}
             >
-                <IList list={['asdf', 'asdgasg', 'gagadgad', 'a']}></IList>
+                <IList list={['asdf', 'asdgasg', 'gagadgad']}></IList>
             </IChoice>
-            <div>{bol ? 'true' : 'false'}</div>
+            <div>isFlow : {isFlow ? 'true' : 'false'}</div>
+            <div>value : {value ? 'true' : 'false'}</div>
         </>
     );
 }
