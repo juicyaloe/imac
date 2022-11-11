@@ -9,13 +9,3 @@
     font-size: 17px;
     padding: 1rem;
 }
-
-.success {
-    background-color: blue;
-    color: white;
-}
-
-.fail {
-    background-color: red;
-    color: white;
-}

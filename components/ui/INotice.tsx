@@ -28,7 +28,7 @@ export default function INotice({text, color, isFlow, handleIsFlow}: Prop) {
                     animate={{opacity: 1}}
                     exit={{opacity: 0}}
                     className={`${classes.default}`}
-                    style={{backgroundColor: `${color}`}}
+                    style={{backgroundColor: `${color}`, color: 'white'}}
                 >
                     {text}
                 </motion.div>
