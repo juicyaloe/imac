@@ -27,23 +27,19 @@ async function fetchUserData() {
     return response.json();
 }
 
-const compUser = (userid: number) => (data) => data.id == userid;
+const compUser = (username: string) => (data) => data.username == username;
 
-const getPlayers = (selectedUser: number) =>
-    R.pipe(
-        R.filter(compUser(selectedUser)),
-        R.map(R.prop('players')),
-        R.unnest,
-    );
+const getPlayers = (username: string) =>
+    R.pipe(R.filter(compUser(username)), R.map(R.prop('players')), R.unnest);
 
 function TradeHome(props) {
     const [key] = useRecoilState(UserKey);
 
-    const [userID, setUserID] = useState<number | undefined>(undefined);
-    const [buyPlayersID, setBuyPlayersID] = useState<number[] | undefined>(
+    const [userID, setUserID] = useState<any | undefined>(undefined);
+    const [buyPlayersID, setBuyPlayersID] = useState<any[] | undefined>(
         undefined,
     );
-    const [sellPlayersID, setSellPlayersID] = useState<number[] | undefined>(
+    const [sellPlayersID, setSellPlayersID] = useState<any[] | undefined>(
         undefined,
     );
 
@@ -79,19 +75,19 @@ function TradeHome(props) {
         //     }
     }
 
-    function onChangeUser(selectedID: number) {
+    function onChangeUser(selectedID) {
         setUserID(selectedID);
         setSelectedPlayers([...getPlayers(selectedID)(data)]);
-        setMyPlayers([...getPlayers(key.id)(data)]);
+        setMyPlayers([...getPlayers(key.username)(data)]);
         setBuyPlayersID([]);
         setSellPlayersID([]);
     }
 
-    function onChangeBuyPlayer(selectedID: number[]) {
+    function onChangeBuyPlayer(selectedID: any[]) {
         setBuyPlayersID([...selectedID]);
     }
 
-    function onChangeSellPlayer(selectedID: number[]) {
+    function onChangeSellPlayer(selectedID: any[]) {
         setSellPlayersID([...selectedID]);
     }
 
@@ -106,8 +102,10 @@ function TradeHome(props) {
                     <ISelect
                         id='main-trade-user'
                         text='거래 대상 회원 선택'
-                        target={data.filter((data) => data.id != key.id)}
-                        keyPropName={'id'}
+                        target={data.filter(
+                            (data) => data.username != key.username,
+                        )}
+                        keyPropName={'username'}
                         dataPropName={'username'}
                         onChangeFunc={onChangeUser}
                     ></ISelect>
