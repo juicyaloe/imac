@@ -20,13 +20,16 @@ function LogIn(props) {
     const password = useRef<HTMLInputElement>(null);
 
     async function auth(body) {
-        let response = await fetch('http://52.78.87.49/api/users/login/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        let response = await fetch(
+            process.env.NEXT_PUBLIC_DOMAIN + 'api/users/login/',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
             },
-            body: JSON.stringify(body),
-        });
+        );
 
         if (response.status === 200) {
             let response_json = await response.json();
