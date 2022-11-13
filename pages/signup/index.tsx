@@ -8,14 +8,27 @@ function SignUp(props) {
     const [message, messageFunc] = useState<buttonOption[] | undefined>(
         undefined,
     );
+    const [isShow, setIsShow] = useState<boolean>(false);
 
     useEffect(() => {
-        if (message) {
-            // 메시지 처리
-        }
+        message?.forEach((option) => {
+            switch (option) {
+                case 'yes':
+                    console.log('수락 버튼을 눌렸습니다.');
+                    break;
+                case 'no':
+                    console.log('거절 버튼을 눌렸습니다.');
+                    break;
+                case 5:
+                    console.log('5 전송했습니다.');
+                    break;
+                case 'close':
+                    console.log('창을 닫았습니다.');
+                    setIsShow(false);
+                    break;
+            }
+        });
     }, [message]);
-
-    const [isShow, setIsShow] = useState<boolean>(false);
 
     return (
         <Fragment>
@@ -25,7 +38,7 @@ function SignUp(props) {
                     btnSet={[
                         {text: '수락', option: ['yes', 'close']},
                         {text: '거절', option: ['no', 'close']},
-                        {text: '기타', option: [5, 'close']},
+                        {text: '5', option: [5]},
                     ]}
                     messageFunc={messageFunc}
                 >
