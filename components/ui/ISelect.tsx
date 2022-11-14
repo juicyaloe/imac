@@ -31,6 +31,7 @@ export default function ISelect({
         multiple
             ? onChangeFunc([] as any[])
             : onChangeFunc(target[0][keyPropName]);
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -39,6 +40,7 @@ export default function ISelect({
         let temp = [...target];
         temp.forEach((data) => (data.isSelected = false));
         setSelectedList(temp);
+        // eslint-disable-next-line
     }, [target]);
 
     function changeSelectedList(selectedKey) {
