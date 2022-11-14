@@ -41,9 +41,9 @@ export default function ISelect({
         setSelectedList(temp);
     }, [target]);
 
-    function changeSelectedList(selectedID: number) {
+    function changeSelectedList(selectedKey) {
         let temp = [...selectedList];
-        temp.filter((data) => data[keyPropName] == selectedID).forEach(
+        temp.filter((data) => data[keyPropName] == selectedKey).forEach(
             (data) => (data.isSelected = !data.isSelected),
         );
         setSelectedList(temp);
@@ -93,12 +93,12 @@ export default function ISelect({
                     {selectedList.map((data) => (
                         <div
                             key={data[keyPropName]}
-                            data-id={data[keyPropName]}
+                            data-value={data[keyPropName]}
                             className={`${
                                 data.isSelected ? classes.clicked : ''
                             }`}
                             onClick={(e: any) =>
-                                changeSelectedList(e.target.dataset.id)
+                                changeSelectedList(e.target.dataset.value)
                             }
                         >
                             &nbsp;{data[dataPropName]}
