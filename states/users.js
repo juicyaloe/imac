@@ -5,10 +5,7 @@ export const UserToken = atom({
     default: process.env.NEXT_PUBLIC_TOKEN,
 });
 
-export const UserKey = atom({
-    key: 'UserKey',
-    default: {
-        id: 2,
-        username: 'test1',
-    },
+export const UserName = atom({
+    key: 'username',
+    default: '',
 });

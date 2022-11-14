@@ -12,7 +12,7 @@ import ISelect from '../../../components/ui/ISelect';
 import * as R from 'ramda';
 
 import {useRecoilState} from 'recoil';
-import {UserKey} from '../../../states/users';
+import {UserName} from '../../../states/users';
 
 async function fetchUserData() {
     let response = await fetch(
@@ -27,19 +27,15 @@ async function fetchUserData() {
     return response.json();
 }
 
-const compUser = (userid: number) => (data) => data.id == userid;
+const compUser = (username: string) => (data) => data.username == username;
 
-const getPlayers = (selectedUser: number) =>
-    R.pipe(
-        R.filter(compUser(selectedUser)),
-        R.map(R.prop('players')),
-        R.unnest,
-    );
+const getPlayers = (username: string) =>
+    R.pipe(R.filter(compUser(username)), R.map(R.prop('players')), R.unnest);
 
 function TradeHome(props) {
-    const [key] = useRecoilState(UserKey);
+    const [username] = useRecoilState(UserName);
 
-    const [userID, setUserID] = useState<number | undefined>(undefined);
+    const [userID, setUserID] = useState<string | undefined>(undefined);
     const [buyPlayersID, setBuyPlayersID] = useState<number[] | undefined>(
         undefined,
     );
@@ -52,12 +48,12 @@ function TradeHome(props) {
     const [myPlayers, setMyPlayers] = useState<any>(undefined);
 
     async function postTrade(
-        targetId: number,
+        targetUser: string,
         targetPlayer: number[],
         myPlayer: number[],
     ) {
         const tradeJson = {
-            targetId: targetId,
+            targetUser: targetUser,
             targetPlayer: targetPlayer,
             myPlayer: myPlayer,
         };
@@ -79,20 +75,22 @@ function TradeHome(props) {
         //     }
     }
 
-    function onChangeUser(selectedID: number) {
-        setUserID(selectedID);
+    function onChangeUser(selectedID) {
+        setUserID(selectedID as string);
+
         setSelectedPlayers([...getPlayers(selectedID)(data)]);
-        setMyPlayers([...getPlayers(key.id)(data)]);
+        setMyPlayers([...getPlayers(username)(data)]);
+
         setBuyPlayersID([]);
         setSellPlayersID([]);
     }
 
-    function onChangeBuyPlayer(selectedID: number[]) {
-        setBuyPlayersID([...selectedID]);
+    function onChangeBuyPlayer(selectedID: any[]) {
+        setBuyPlayersID([...selectedID] as number[]);
     }
 
-    function onChangeSellPlayer(selectedID: number[]) {
-        setSellPlayersID([...selectedID]);
+    function onChangeSellPlayer(selectedID: any[]) {
+        setSellPlayersID([...selectedID] as number[]);
     }
 
     return (
@@ -106,8 +104,10 @@ function TradeHome(props) {
                     <ISelect
                         id='main-trade-user'
                         text='거래 대상 회원 선택'
-                        target={data.filter((data) => data.id != key.id)}
-                        keyPropName={'id'}
+                        target={data.filter(
+                            (data) => data.username != username,
+                        )}
+                        keyPropName={'username'}
                         dataPropName={'username'}
                         onChangeFunc={onChangeUser}
                     ></ISelect>

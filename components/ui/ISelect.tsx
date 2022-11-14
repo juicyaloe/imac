@@ -29,8 +29,8 @@ export default function ISelect({
     useEffect(() => {
         console.log('initialize', id);
         multiple
-            ? onChangeFunc([] as number[])
-            : onChangeFunc(Number(target[0][keyPropName]));
+            ? onChangeFunc([] as any[])
+            : onChangeFunc(target[0][keyPropName]);
     }, []);
 
     useEffect(() => {
@@ -41,16 +41,16 @@ export default function ISelect({
         setSelectedList(temp);
     }, [target]);
 
-    function changeSelectedList(selectedID: number) {
+    function changeSelectedList(selectedKey) {
         let temp = [...selectedList];
-        temp.filter((data) => data[keyPropName] == selectedID).forEach(
+        temp.filter((data) => data[keyPropName] == selectedKey).forEach(
             (data) => (data.isSelected = !data.isSelected),
         );
         setSelectedList(temp);
         onChangeFunc(
             temp
                 .filter((data) => data.isSelected)
-                .map((data) => data[keyPropName] as number),
+                .map((data) => data[keyPropName]),
         );
     }
 
@@ -61,7 +61,7 @@ export default function ISelect({
                 <select
                     name={id}
                     id={id}
-                    onChange={(e) => onChangeFunc(Number(e.target.value))}
+                    onChange={(e) => onChangeFunc(e.target.value)}
                 >
                     {selectedList.map((data) => (
                         <option
@@ -93,12 +93,12 @@ export default function ISelect({
                     {selectedList.map((data) => (
                         <div
                             key={data[keyPropName]}
-                            data-id={data[keyPropName]}
+                            data-value={data[keyPropName]}
                             className={`${
                                 data.isSelected ? classes.clicked : ''
                             }`}
                             onClick={(e: any) =>
-                                changeSelectedList(Number(e.target.dataset.id))
+                                changeSelectedList(e.target.dataset.value)
                             }
                         >
                             &nbsp;{data[dataPropName]}
