@@ -23,7 +23,7 @@ interface Prop {
 }
 
 const IChoice = ({
-    size = {width: '18rem', height: '13rem'},
+    size = {width: '20rem', height: ''},
     title,
     children,
     btnSet,
