@@ -1,36 +1,21 @@
-import React from 'react';
+import {Fragment} from 'react';
 import Image from 'next/image';
 import classes from './index.module.css';
-import testJson from '../../public/userTestData.json';
 
-function userInfo() {
-    return (
-        <div>
-            {testJson.map((user) => (
-                <div className={classes.content} key={user.id}>
-                    <div className={classes.infoName}>{user.name}</div>
-                    <div className={classes.infoSchool}>{user.school}</div>
-                    <div className={classes.info}>
-                        {user.avg}
-                        <div className={classes.infoTag}>Batting Average</div>
-                    </div>
-                    <div className={classes.info}>
-                        {user.hr}
-                        <div className={classes.infoTag}>Homeruns</div>
-                    </div>
-                    <div className={classes.info}>
-                        {user.rbi}
-                        <div className={classes.infoTag}>Runs Batted In</div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
+const testJson = [
+    {
+        id: '1',
+        name: 'Mincheol Lee',
+        school: 'ChungNam National University , Andong High School',
+        avg: '.991',
+        hr: '54',
+        rbi: '073',
+    },
+];
 
-export default function Main() {
+export default function MainA() {
     return (
-        <body className={classes.background}>
+        <div className={classes.background}>
             <div className={classes.card}>
                 <div className={classes.cardTopbar}>
                     <div className={classes.cardTopbarText}>마구야구야구</div>
@@ -46,8 +31,33 @@ export default function Main() {
                         ></Image>
                     </div>
                 </div>
-                <div> {userInfo()} </div>
+                <div>
+                    {testJson.map((user) => (
+                        <div className={classes.content} key={user.id}>
+                            <div className={classes.infoName}>{user.name}</div>
+                            <div className={classes.infoSchool}>
+                                {user.school}
+                            </div>
+                            <div className={classes.info}>
+                                {user.avg}
+                                <div className={classes.infoTag}>
+                                    Batting Average
+                                </div>
+                            </div>
+                            <div className={classes.info}>
+                                {user.hr}
+                                <div className={classes.infoTag}>Homeruns</div>
+                            </div>
+                            <div className={classes.info}>
+                                {user.rbi}
+                                <div className={classes.infoTag}>
+                                    Runs Batted In
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </body>
+        </div>
     );
 }
