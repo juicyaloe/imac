@@ -11,23 +11,25 @@ function SignUp(props) {
     const [isShow, setIsShow] = useState<boolean>(false);
 
     useEffect(() => {
-        message?.forEach((option) => {
-            switch (option) {
-                case 'yes':
-                    console.log('수락 버튼을 눌렸습니다.');
-                    break;
-                case 'no':
-                    console.log('거절 버튼을 눌렸습니다.');
-                    break;
-                case 5:
-                    console.log('5 전송했습니다.');
-                    break;
-                case 'close':
-                    console.log('창을 닫았습니다.');
-                    setIsShow(false);
-                    break;
-            }
-        });
+        const checkFunc = (option: buttonOption) =>
+            message?.some((message) => message == option);
+
+        if (checkFunc('yes')) {
+            console.log('수락 버튼을 눌렸습니다.');
+        }
+
+        if (checkFunc('no')) {
+            console.log('거절 버튼을 눌렸습니다.');
+        }
+
+        if (checkFunc(5)) {
+            console.log('5 전송했습니다.');
+        }
+
+        if (checkFunc('close')) {
+            console.log('창을 닫았습니다.');
+            setIsShow(false);
+        }
     }, [message]);
 
     return (
