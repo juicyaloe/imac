@@ -12,3 +12,8 @@ export const UserKey = atom({
         username: 'test1',
     },
 });
+
+export const UserName = atom({
+    key: 'username',
+    default: '',
+});
