@@ -2,7 +2,7 @@ import classes from './index.module.css';
 import {useRecoilState} from 'recoil';
 import {useRef, useState, useEffect} from 'react';
 import Link from 'next/link';
-import {UserToken} from '../states/users';
+import {UserToken, UserName} from '../states/users';
 import INotice from '../components/ui/INotice';
 interface ISettings {
     text: string;
@@ -10,6 +10,7 @@ interface ISettings {
 }
 function LogIn(props) {
     const [token, setToken] = useRecoilState(UserToken);
+    const [name, setName] = useRecoilState(UserName);
     const [loginSetting, setLoginSetting] = useState<ISettings>({
         text: '',
         color: '',
@@ -34,6 +35,8 @@ function LogIn(props) {
         if (response.status === 200) {
             let response_json = await response.json();
             setToken(response_json.Token);
+            setName(body.username);
+            console.log(body.username);
             setIsFlow(true);
             setLoginSetting({text: '로그인 성공', color: 'blue'});
         } else {
