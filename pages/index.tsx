@@ -3,12 +3,14 @@ import {useRecoilState} from 'recoil';
 import {useRef, useState, useEffect} from 'react';
 import Link from 'next/link';
 import {UserToken, UserName} from '../states/users';
+import {useRouter} from 'next/router';
 import INotice from '../components/ui/INotice';
 interface ISettings {
     text: string;
     color: string;
 }
 function LogIn(props) {
+    const router = useRouter();
     const [token, setToken] = useRecoilState(UserToken);
     const [name, setName] = useRecoilState(UserName);
     const [loginSetting, setLoginSetting] = useState<ISettings>({
@@ -39,6 +41,7 @@ function LogIn(props) {
             console.log(body.username);
             setIsFlow(true);
             setLoginSetting({text: '로그인 성공', color: 'blue'});
+            router.push('/main/trade/');
         } else {
             setIsFlow(true);
             setLoginSetting({
