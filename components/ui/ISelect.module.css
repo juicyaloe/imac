@@ -34,8 +34,7 @@
 
 .multiple_box div:active,
 .multiple_box div:hover {
-    background-color: skyblue;
-    color: black;
+    border: 1px solid black;
 }
 
 .no_data {
