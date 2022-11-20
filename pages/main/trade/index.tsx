@@ -12,11 +12,11 @@ import ISelect from '../../../components/ui/ISelect';
 import * as R from 'ramda';
 
 import {useRecoilState} from 'recoil';
-import {UserName} from '../../../states/users';
+import {UserData} from '../../../states/users';
 
 async function fetchUserData() {
     let response = await fetch(
-        process.env.NEXT_PUBLIC_DOMAIN + 'api/users/profiles/',
+        process.env.NEXT_PUBLIC_DOMAIN + '/api/users/profiles/',
         {
             headers: {
                 Authorization: 'Token ' + process.env.NEXT_PUBLIC_TOKEN,
@@ -33,7 +33,7 @@ const getPlayers = (username: string) =>
     R.pipe(R.filter(compUser(username)), R.map(R.prop('players')), R.unnest);
 
 function TradeHome(props) {
-    const [username] = useRecoilState(UserName);
+    const [userData] = useRecoilState(UserData);
 
     const [userID, setUserID] = useState<string | undefined>(undefined);
     const [buyPlayersID, setBuyPlayersID] = useState<number[] | undefined>(
@@ -46,6 +46,13 @@ function TradeHome(props) {
     const {data, isLoading} = useQuery(['user-data'], fetchUserData);
     const [selectedPlayers, setSelectedPlayers] = useState<any>(undefined);
     const [myPlayers, setMyPlayers] = useState<any>(undefined);
+
+    useEffect(() => {
+        if (data) {
+            setMyPlayers([...getPlayers(userData.username)(data)]);
+        }
+        // eslint-disable-next-line
+    }, [userData]);
 
     async function postTrade(
         targetUser: string,
@@ -79,7 +86,7 @@ function TradeHome(props) {
         setUserID(selectedID as string);
 
         setSelectedPlayers([...getPlayers(selectedID)(data)]);
-        setMyPlayers([...getPlayers(username)(data)]);
+        setMyPlayers([...getPlayers(userData.username)(data)]);
 
         setBuyPlayersID([]);
         setSellPlayersID([]);
@@ -99,13 +106,18 @@ function TradeHome(props) {
             id='main-trade'
             onSubmit={sellSubmitHandler}
         >
+            {userData.username != '' ? (
+                <div>현재 상태: {userData.username}(으)로 로그인</div>
+            ) : (
+                <div>현재 상태: 비로그인</div>
+            )}
             <div className={classes.controls}>
                 {!isLoading ? (
                     <ISelect
                         id='main-trade-user'
                         text='거래 대상 회원 선택'
                         target={data.filter(
-                            (data) => data.username != username,
+                            (data) => data.username != userData.username,
                         )}
                         keyPropName={'username'}
                         dataPropName={'username'}

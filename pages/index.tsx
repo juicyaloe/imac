@@ -2,17 +2,28 @@ import classes from './index.module.css';
 import {useRecoilState} from 'recoil';
 import {useRef, useState, useEffect} from 'react';
 import Link from 'next/link';
-import {UserToken, UserName} from '../states/users';
+import {UserData} from '../states/users';
 import {useRouter} from 'next/router';
 import INotice from '../components/ui/INotice';
+
+interface authBodyType {
+    username: string;
+    password: string;
+}
+
+// INotice Setting
 interface ISettings {
     text: string;
     color: string;
 }
+
 function LogIn(props) {
     const router = useRouter();
-    const [token, setToken] = useRecoilState(UserToken);
-    const [name, setName] = useRecoilState(UserName);
+
+    // 로그인 관리용
+    const [userData, setUserData] = useRecoilState(UserData);
+
+    // INotice용
     const [loginSetting, setLoginSetting] = useState<ISettings>({
         text: '',
         color: '',
@@ -22,9 +33,9 @@ function LogIn(props) {
     const id = useRef<HTMLInputElement>(null);
     const password = useRef<HTMLInputElement>(null);
 
-    async function auth(body) {
+    async function auth(body: authBodyType) {
         let response = await fetch(
-            process.env.NEXT_PUBLIC_DOMAIN + 'api/users/login/',
+            process.env.NEXT_PUBLIC_DOMAIN + '/api/users/login/',
             {
                 method: 'POST',
                 headers: {
@@ -34,45 +45,50 @@ function LogIn(props) {
             },
         );
 
-        if (response.status === 200) {
+        if (response.ok) {
             let response_json = await response.json();
-            setToken(response_json.Token);
-            setName(body.username);
-            console.log(body.username);
+            setUserData({
+                ...userData,
+                isLogin: true,
+                username: body.username,
+                token: response_json.Token,
+            });
+
+            // INotice
             setIsFlow(true);
             setLoginSetting({text: '로그인 성공', color: 'blue'});
-            router.push('/main/trade/');
+
+            router.push('/main/');
         } else {
             setIsFlow(true);
             setLoginSetting({
                 text: '로그인 실패 : ID 또는 PW 를 다시 확인해라 국노야ㅡㅡ',
                 color: 'red',
             });
-            return;
         }
     }
 
     const LoginFunc = (e) => {
         e.preventDefault();
+
         if (id.current!.value === '') {
             setIsFlow(true);
             setLoginSetting({
                 text: '로그인 실패 : ID를 입력해라 국노야ㅡㅡ',
                 color: 'red',
             });
-            return;
         } else if (password.current!.value === '') {
             setIsFlow(true);
             setLoginSetting({
                 text: '로그인 실패 : Password를 입력해라 국노야ㅡㅡ',
                 color: 'red',
             });
-            return;
         } else {
-            let body = {
-                username: id.current?.value,
-                password: password.current?.value,
+            let body: authBodyType = {
+                username: id.current?.value ?? '',
+                password: password.current?.value ?? '',
             };
+
             auth(body);
         }
     };
