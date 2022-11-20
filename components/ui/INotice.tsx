@@ -18,6 +18,7 @@ export default function INotice({text, color, isFlow, handleIsFlow}: Prop) {
         return () => {
             clearTimeout(onTimer);
         };
+        // eslint-disable-next-line
     }, [isFlow]);
 
     return (

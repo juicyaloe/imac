@@ -47,6 +47,13 @@ function TradeHome(props) {
     const [selectedPlayers, setSelectedPlayers] = useState<any>(undefined);
     const [myPlayers, setMyPlayers] = useState<any>(undefined);
 
+    useEffect(() => {
+        if (data) {
+            setMyPlayers([...getPlayers(userData.username)(data)]);
+        }
+        // eslint-disable-next-line
+    }, [userData]);
+
     async function postTrade(
         targetUser: string,
         targetPlayer: number[],

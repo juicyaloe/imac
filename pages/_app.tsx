@@ -5,6 +5,7 @@ import {useState} from 'react';
 import {Hydrate, QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import {RecoilRoot} from 'recoil';
+import Layout from '../components/layout';
 
 function MyApp({Component, pageProps}) {
     // react-query setting
@@ -14,7 +15,9 @@ function MyApp({Component, pageProps}) {
         <RecoilRoot>
             <QueryClientProvider client={queryClient}>
                 <Hydrate state={pageProps.dehydratedState}>
-                    <Component {...pageProps} />
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
                 </Hydrate>
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
