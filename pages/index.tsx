@@ -1,127 +1,28 @@
-import classes from './index.module.css';
-import {useRecoilState} from 'recoil';
-import {useRef, useState, useEffect} from 'react';
-import Link from 'next/link';
-import {UserToken, UserName} from '../states/users';
-import {useRouter} from 'next/router';
-import INotice from '../components/ui/INotice';
-interface ISettings {
-    text: string;
-    color: string;
-}
-function LogIn(props) {
-    const router = useRouter();
-    const [token, setToken] = useRecoilState(UserToken);
-    const [name, setName] = useRecoilState(UserName);
-    const [loginSetting, setLoginSetting] = useState<ISettings>({
-        text: '',
-        color: '',
-    });
-    const [isFlow, setIsFlow] = useState<boolean>(false);
+import {signIn, signOut, useSession} from 'next-auth/react';
+import {Fragment} from 'react';
 
-    const id = useRef<HTMLInputElement>(null);
-    const password = useRef<HTMLInputElement>(null);
+export default function Home() {
+    const {data} = useSession();
 
-    async function auth(body) {
-        let response = await fetch(
-            process.env.NEXT_PUBLIC_DOMAIN + 'api/users/login/',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            },
-        );
+    async function login() {
+        const result = await signIn('credentials', {
+            redirect: false,
+            id: 'test',
+            password: '12345678',
+        });
 
-        if (response.status === 200) {
-            let response_json = await response.json();
-            setToken(response_json.Token);
-            setName(body.username);
-            console.log(body.username);
-            setIsFlow(true);
-            setLoginSetting({text: '로그인 성공', color: 'blue'});
-            router.push('/main/trade/');
-        } else {
-            setIsFlow(true);
-            setLoginSetting({
-                text: '로그인 실패 : ID 또는 PW 를 다시 확인해라 국노야ㅡㅡ',
-                color: 'red',
-            });
-            return;
-        }
+        if (result?.error) console.log('로그인 실패');
+        else console.log(result, '로그인 성공');
     }
 
-    const LoginFunc = (e) => {
-        e.preventDefault();
-        if (id.current!.value === '') {
-            setIsFlow(true);
-            setLoginSetting({
-                text: '로그인 실패 : ID를 입력해라 국노야ㅡㅡ',
-                color: 'red',
-            });
-            return;
-        } else if (password.current!.value === '') {
-            setIsFlow(true);
-            setLoginSetting({
-                text: '로그인 실패 : Password를 입력해라 국노야ㅡㅡ',
-                color: 'red',
-            });
-            return;
-        } else {
-            let body = {
-                username: id.current?.value,
-                password: password.current?.value,
-            };
-            auth(body);
-        }
-    };
-
+    function logout() {
+        signOut();
+    }
     return (
-        <>
-            <div className={classes.bbody}>
-                <div className={classes.body}></div>
-                <div className={classes.grad}></div>
-                <div className={classes.header}>
-                    <div>
-                        성프야<span>Fantasy</span>
-                    </div>
-                </div>
-                <br></br>
-                <div className={classes.login}>
-                    <input
-                        type='text'
-                        id='id'
-                        placeholder='ID'
-                        ref={id}
-                        onKeyPress={(e) => {
-                            if (e.key == 'Enter') LoginFunc(e);
-                        }}
-                    ></input>
-                    <br></br>
-                    <input
-                        type='password'
-                        placeholder='password'
-                        ref={password}
-                        onKeyPress={(e) => {
-                            if (e.key == 'Enter') LoginFunc(e);
-                        }}
-                    ></input>
-                    <br></br>
-                    <button onClick={(e) => LoginFunc(e)}>Login</button>
-                    <Link href='/signup'>
-                        <button>Sign Up</button>
-                    </Link>
-                </div>
-            </div>
-            <INotice
-                text={loginSetting.text}
-                color={loginSetting.color}
-                isFlow={isFlow}
-                handleIsFlow={setIsFlow}
-            ></INotice>
-        </>
+        <Fragment>
+            <button onClick={login}>qwdqwdw</button>
+            <button onClick={logout}>로그아웃</button>
+            <button onClick={() => console.log(data?.user)}>qdw</button>
+        </Fragment>
     );
 }
-
-export default LogIn;
