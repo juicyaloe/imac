@@ -2,7 +2,6 @@ import classes from './index.module.css';
 import {useRecoilState} from 'recoil';
 import {useRef, useState, useEffect} from 'react';
 import Link from 'next/link';
-import {UserToken} from '../../states/users';
 import INotice from '../../components/ui/INotice';
 interface ISettings {
     text: string;
@@ -21,7 +20,7 @@ function LogIn(props) {
 
     async function auth(body) {
         let response = await fetch(
-            process.env.NEXT_PUBLIC_DOMAIN + 'api/users/register/',
+            process.env.NEXT_PUBLIC_DOMAIN + '/api/users/register/',
             {
                 method: 'POST',
                 headers: {
