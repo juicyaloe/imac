@@ -8,7 +8,7 @@ export default function Home() {
         const result = await signIn('credentials', {
             redirect: false,
             id: 'test',
-            password: '12345678',
+            password: '123456',
         });
 
         if (result?.error) console.log('로그인 실패');
