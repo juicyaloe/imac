@@ -31,6 +31,13 @@ export default function Navbar() {
         <StyledBar>
             <StyledText>Main 개발 전까지 테스트용 NavBar</StyledText>
             <StyledText onClick={() => router.push('/main/')}>홈</StyledText>
+
+            <StyledText onClick={() => router.push('/main/trade/')}>
+                거래하기
+            </StyledText>
+            <StyledText onClick={() => router.push('/main/info/')}>
+                내 정보
+            </StyledText>
             <StyledText
                 onClick={() => {
                     setUserData({isLogin: false, username: '', token: ''});
@@ -38,9 +45,6 @@ export default function Navbar() {
                 }}
             >
                 로그아웃
-            </StyledText>
-            <StyledText onClick={() => router.push('/main/trade/')}>
-                거래하기
             </StyledText>
         </StyledBar>
     );
