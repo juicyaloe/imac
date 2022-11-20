@@ -1,6 +1,6 @@
 import {atom} from 'recoil';
 
-interface UserObject {
+export interface UserObject {
     isLogin: boolean;
     username: string;
     token: string;
