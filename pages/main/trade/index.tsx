@@ -106,6 +106,11 @@ function TradeHome(props) {
             id='main-trade'
             onSubmit={sellSubmitHandler}
         >
+            {userData.username != '' ? (
+                <div>현재 상태: {userData.username}(으)로 로그인</div>
+            ) : (
+                <div>현재 상태: 비로그인</div>
+            )}
             <div className={classes.controls}>
                 {!isLoading ? (
                     <ISelect

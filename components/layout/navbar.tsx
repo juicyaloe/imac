@@ -29,6 +29,7 @@ export default function Navbar() {
 
     return (
         <StyledBar>
+            <StyledText>Main 개발 전까지 테스트용 NavBar</StyledText>
             <StyledText onClick={() => router.push('/main/')}>홈</StyledText>
             <StyledText
                 onClick={() => {
