@@ -18,7 +18,7 @@ interface UserInfo {
 
 async function fetchMyInfo() {
     let response = await fetch(
-        process.env.NEXT_PUBLIC_DOMAIN + 'api/users/profiles/my/',
+        process.env.NEXT_PUBLIC_DOMAIN + '/api/users/profiles/my/',
         {
             method: 'POST',
             headers: {
