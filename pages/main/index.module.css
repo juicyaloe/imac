@@ -19,6 +19,11 @@
 }
 
 .cardTopbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+
     margin: auto;
     margin-top: 30px;
     background-color: rgb(231, 231, 231);
@@ -76,4 +81,11 @@
 .infoTag {
     font-size: 15px;
     font-weight: 350;
+}
+
+@media (width < 800px) {
+    .cardTopbar {
+        flex-direction: column;
+        display: none;
+    }
 }
