@@ -1,5 +1,6 @@
 import {Fragment} from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import classes from './index.module.css';
 
 const testJson = [
@@ -19,8 +20,12 @@ export default function MainA() {
             <div className={classes.card}>
                 <div className={classes.cardTopbar}>
                     <div className={classes.cardTopbarText}>마구야구야구</div>
-                    <button onClick={() => alert('내 정보')}>내 정보</button>
-                    <button onClick={() => alert('경매장')}>경매장</button>
+                    <Link href='/mypage'>
+                        <button>내 정보</button>
+                    </Link>
+                    <Link href='/main/trade'>
+                        <button>경매장</button>
+                    </Link>
                     <div className={classes.cardTopbarMenu}>
                         <Image
                             width='30px'
